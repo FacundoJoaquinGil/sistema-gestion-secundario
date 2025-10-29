@@ -26,10 +26,10 @@ Partial Class Form1
         PictureBox2 = New PictureBox()
         Label1 = New Label()
         Panel1 = New Panel()
-        Button1 = New Button()
+        btnLogin = New Button()
         Label5 = New Label()
         Label4 = New Label()
-        TextBox2 = New TextBox()
+        txtPassword = New TextBox()
         Label3 = New Label()
         TextBox1 = New TextBox()
         Label2 = New Label()
@@ -54,7 +54,7 @@ Partial Class Form1
         ' 
         Label1.AutoSize = True
         Label1.BackColor = Color.Transparent
-        Label1.Font = New Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label1.Font = New Font("Segoe UI", 24.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label1.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label1.Location = New Point(293, 121)
         Label1.Name = "Label1"
@@ -66,10 +66,10 @@ Partial Class Form1
         ' 
         Panel1.BackColor = Color.WhiteSmoke
         Panel1.BorderStyle = BorderStyle.FixedSingle
-        Panel1.Controls.Add(Button1)
+        Panel1.Controls.Add(btnLogin)
         Panel1.Controls.Add(Label5)
         Panel1.Controls.Add(Label4)
-        Panel1.Controls.Add(TextBox2)
+        Panel1.Controls.Add(txtPassword)
         Panel1.Controls.Add(Label3)
         Panel1.Controls.Add(TextBox1)
         Panel1.Controls.Add(Label2)
@@ -78,22 +78,22 @@ Partial Class Form1
         Panel1.Size = New Size(580, 309)
         Panel1.TabIndex = 3
         ' 
-        ' Button1
+        ' btnLogin
         ' 
-        Button1.BackColor = Color.MediumOrchid
-        Button1.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        Button1.ForeColor = Color.White
-        Button1.Location = New Point(197, 260)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(175, 35)
-        Button1.TabIndex = 4
-        Button1.Text = "INGRESAR"
-        Button1.UseVisualStyleBackColor = False
+        btnLogin.BackColor = Color.MediumOrchid
+        btnLogin.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        btnLogin.ForeColor = Color.White
+        btnLogin.Location = New Point(197, 260)
+        btnLogin.Name = "btnLogin"
+        btnLogin.Size = New Size(175, 35)
+        btnLogin.TabIndex = 4
+        btnLogin.Text = "INGRESAR"
+        btnLogin.UseVisualStyleBackColor = False
         ' 
         ' Label5
         ' 
         Label5.AutoSize = True
-        Label5.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Label5.Font = New Font("Segoe UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Label5.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label5.Location = New Point(133, 58)
         Label5.Name = "Label5"
@@ -112,17 +112,18 @@ Partial Class Form1
         Label4.TabIndex = 7
         Label4.Text = "contraseña:"
         ' 
-        ' TextBox2
+        ' txtPassword
         ' 
-        TextBox2.BackColor = Color.White
-        TextBox2.BorderStyle = BorderStyle.FixedSingle
-        TextBox2.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        TextBox2.ForeColor = Color.Gray
-        TextBox2.Location = New Point(159, 192)
-        TextBox2.Name = "TextBox2"
-        TextBox2.PlaceholderText = " ejemplo: 1234"
-        TextBox2.Size = New Size(209, 25)
-        TextBox2.TabIndex = 6
+        txtPassword.BackColor = Color.White
+        txtPassword.BorderStyle = BorderStyle.FixedSingle
+        txtPassword.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        txtPassword.ForeColor = Color.Gray
+        txtPassword.Location = New Point(159, 192)
+        txtPassword.Name = "txtPassword"
+        txtPassword.PlaceholderText = " ejemplo:1234"
+        txtPassword.Size = New Size(209, 25)
+        txtPassword.TabIndex = 6
+        txtPassword.PasswordChar = "*"c
         ' 
         ' Label3
         ' 
@@ -163,7 +164,7 @@ Partial Class Form1
         ' 
         Label6.AutoSize = True
         Label6.BackColor = Color.Transparent
-        Label6.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Label6.Font = New Font("Segoe UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Label6.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label6.Location = New Point(337, 166)
         Label6.Name = "Label6"
@@ -173,7 +174,7 @@ Partial Class Form1
         ' 
         ' Form1
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = Color.White
         BackgroundImage = My.Resources.Resources.background
@@ -196,11 +197,11 @@ Partial Class Form1
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Label2 As Label
     Friend WithEvents Label4 As Label
-    Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents txtPassword As TextBox
     Friend WithEvents Label3 As Label
     Friend WithEvents TextBox1 As TextBox
     Friend WithEvents Label5 As Label
-    Friend WithEvents Button1 As Button
+    Friend WithEvents btnLogin As Button
     Friend WithEvents Label6 As Label
 
 End Class
