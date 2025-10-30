@@ -1,0 +1,64 @@
+﻿{
+  "alumnos": [
+    {
+      "id": 1,
+      "nombre": "María",
+      "apellido": "González",
+      "fechaNacimiento": "2006-05-12",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": [ 8.5, 7.0, 9.0 ]
+        },
+        {
+          "idMateria": 2,
+          "nombreMateria": "Historia",
+          "notas": [ 7.5, 8.0, 6.5 ]
+        }
+      ],
+      "asistencias": [
+        {
+          "fecha": "2025-10-01",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-02",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-03",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "nombre": "Juan",
+      "apellido": "Pérez",
+      "fechaNacimiento": "2005-11-20",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": [ 6.0, 6.5, 7.0 ]
+        },
+        {
+          "idMateria": 3,
+          "nombreMateria": "Física",
+          "notas": [ 8.0, 7.5, 9.0 ]
+        }
+      ],
+      "asistencias": [
+        {
+          "fecha": "2025-10-01",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-02",
+          "presente": true
+        }
+      ]
+    }
+  ]
+}

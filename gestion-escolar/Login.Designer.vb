@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class Form1
+Partial Class Login
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -22,7 +22,7 @@ Partial Class Form1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Login))
         PictureBox2 = New PictureBox()
         Label1 = New Label()
         Panel1 = New Panel()
@@ -171,7 +171,7 @@ Partial Class Form1
         Label6.TabIndex = 9
         Label6.Text = "Ingrese a su cuenta"
         ' 
-        ' Form1
+        ' Login
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
@@ -182,8 +182,10 @@ Partial Class Form1
         Controls.Add(Panel1)
         Controls.Add(Label1)
         Controls.Add(PictureBox2)
-        Name = "Form1"
-        Text = "Form1"
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        Name = "Login"
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "Login"
         CType(PictureBox2, ComponentModel.ISupportInitialize).EndInit()
         Panel1.ResumeLayout(False)
         Panel1.PerformLayout()
