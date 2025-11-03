@@ -7,6 +7,18 @@
     <Compile Update="PortalAlumnos.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="FormAgregarAlumno.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FormCarga.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FormDetalleAsistencia.vb.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FormMenu.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="My Project\Resources.resx">
