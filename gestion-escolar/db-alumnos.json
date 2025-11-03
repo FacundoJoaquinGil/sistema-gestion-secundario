@@ -2,6 +2,9 @@
   "alumnos": [
     {
       "id": 1,
+      "tipo": "alumno",
+      "usuario": "mariagon1",
+      "password": "1234",
       "nombre": "María",
       "apellido": "González",
       "fechaNacimiento": "2006-05-12",
@@ -34,6 +37,9 @@
     },
     {
       "id": 2,
+      "tipo": "alumno",
+      "usuario": "juanpe1",
+      "password": "1234",
       "nombre": "Juan",
       "apellido": "Pérez",
       "fechaNacimiento": "2005-11-20",
@@ -59,6 +65,25 @@
           "presente": true
         }
       ]
+    }
+  ],
+
+  "profesores": [
+    {
+      "nombre": "Marcelo",
+      "apellido": "Alvarez",
+      "tipo": "profesor",
+      "usuario": "chelo1",
+      "password": "admin123",
+      "materia": "Matemáticas"
+    },
+    {
+      "nombre": "Joaquin",
+      "apellido": "Gil",
+      "tipo": "profesor",
+      "usuario": "joa1",
+      "password": "admin123",
+      "materia": "Historia"
     }
   ]
 }

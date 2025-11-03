@@ -1,12 +1,16 @@
 ﻿Imports System.Globalization
 Imports System.IO
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports Newtonsoft.Json
 
 Public Class PortalAlumnos
+
+    ' Propiedad pública para recibir el usuario logueado desde Login
+    Public Property UsuarioActual As String
+
     Private db As RootDB
     Private currentMonth As Integer
     Private currentYear As Integer
+    Private currentAlumno As Alumno ' Alumno actualmente mostrado
 
     Private Sub PortalAlumnos_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Inicializamos mes actual
@@ -17,7 +21,8 @@ Public Class PortalAlumnos
         ' Cargar DB
         Dim rutaJson As String = Path.Combine(Application.StartupPath, "db-alumnos.json")
         If Not File.Exists(rutaJson) Then
-            MessageBox.Show("No se encontró db-alumnos.json en: " & rutaJson)
+            MessageBox.Show("No se encontró db-alumnos.json en: " & rutaJson, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Me.Close()
             Return
         End If
 
@@ -25,31 +30,50 @@ Public Class PortalAlumnos
         Try
             db = JsonConvert.DeserializeObject(Of RootDB)(json)
         Catch ex As Exception
-            MessageBox.Show("Error parseando JSON: " & ex.Message)
+            MessageBox.Show("Error parseando JSON: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Me.Close()
             Return
         End Try
 
-        CargarComboAlumnos()
+        ' Verificar que se pasó el usuario desde Login
+        If String.IsNullOrWhiteSpace(UsuarioActual) Then
+            MessageBox.Show("No se recibió usuario desde el Login.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Me.Close()
+            Return
+        End If
+
+        If db Is Nothing OrElse db.alumnos Is Nothing OrElse db.alumnos.Count = 0 Then
+            MessageBox.Show("No hay alumnos cargados en la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Me.Close()
+            Return
+        End If
+
+        ' Buscar por campo 'usuario' (case-insensitive)
+        currentAlumno = db.alumnos.FirstOrDefault(Function(a) _
+            Not String.IsNullOrEmpty(a.usuario) AndAlso
+            a.usuario.Equals(UsuarioActual, StringComparison.OrdinalIgnoreCase))
+
+        If currentAlumno Is Nothing Then
+            MessageBox.Show($"No se encontró el alumno con usuario '{UsuarioActual}'.", "Usuario no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Me.Close()
+            Return
+        End If
+
+        ' Poner mensaje de bienvenida en lblUsuario (si existe)
+        If Me.Controls.ContainsKey("lblUsuario") Then
+            CType(Me.Controls("lblUsuario"), Label).Text = $"Bienvenido {currentAlumno.nombre} {currentAlumno.apellido}"
+        End If
+
+        ' Mostrar datos básicos del alumno en etiquetas (si existen)
+        If Me.Controls.ContainsKey("lblNombre") Then
+            CType(Me.Controls("lblNombre"), Label).Text = $"{currentAlumno.nombre} {currentAlumno.apellido}"
+        End If
+        If Me.Controls.ContainsKey("lblFechaNacimiento") Then
+            CType(Me.Controls("lblFechaNacimiento"), Label).Text = currentAlumno.fechaNacimiento
+        End If
+
         lblLegend.Text = "Verde = Presente — Rojo = Ausente"
         UpdateMonthLabel()
-        DibujaCalendario()
-    End Sub
-
-    Private Sub CargarComboAlumnos()
-        cmbAlumnos.Items.Clear()
-        If db Is Nothing OrElse db.alumnos Is Nothing Then Return
-
-        For Each a In db.alumnos
-            ' mostramos "Nombre Apellido" y guardamos el objeto en Tag
-            cmbAlumnos.Items.Add(New ComboItem With {.Text = $"{a.nombre} {a.apellido}", .Value = a})
-        Next
-
-        If cmbAlumnos.Items.Count > 0 Then
-            cmbAlumnos.SelectedIndex = 0
-        End If
-    End Sub
-
-    Private Sub cmbAlumnos_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbAlumnos.SelectedIndexChanged
         DibujaCalendario()
     End Sub
 
@@ -81,14 +105,20 @@ Public Class PortalAlumnos
     Private Sub DibujaCalendario()
         flpCalendar.Controls.Clear()
 
-        If cmbAlumnos.SelectedItem Is Nothing Then Return
-        Dim alumno As Alumno = CType(DirectCast(cmbAlumnos.SelectedItem, ComboItem).Value, Alumno)
+        If currentAlumno Is Nothing Then
+            Dim lbl As New Label With {
+                .Text = "No hay alumno seleccionado.",
+                .AutoSize = False,
+                .Size = New Size(300, 40),
+                .TextAlign = ContentAlignment.MiddleCenter
+            }
+            flpCalendar.Controls.Add(lbl)
+            Return
+        End If
 
-        ' Construimos un diccionario de asistencias por fecha (solo del alumno seleccionado)
         Dim asistDict As New Dictionary(Of DateTime, Boolean)
-        If alumno.asistencias IsNot Nothing Then
-            For Each a In alumno.asistencias
-                ' Usamos ParseExact para el formato YYYY-MM-DD
+        If currentAlumno.asistencias IsNot Nothing Then
+            For Each a In currentAlumno.asistencias
                 Dim dt As DateTime
                 If DateTime.TryParseExact(a.fecha, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, dt) Then
                     asistDict(dt.Date) = a.presente
@@ -96,7 +126,6 @@ Public Class PortalAlumnos
             Next
         End If
 
-        ' Cabeceras de semana (Lun, Mar, ...)
         Dim diasSemana As String() = {"Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"}
         For Each d In diasSemana
             Dim lbl As New Label With {
@@ -109,14 +138,10 @@ Public Class PortalAlumnos
             flpCalendar.Controls.Add(lbl)
         Next
 
-        ' Calcular offset para que el 1° caiga en el día correcto (consideramos Lunes como primer día)
         Dim firstOfMonth As New DateTime(currentYear, currentMonth, 1)
-        ' DayOfWeek: Sunday=0, Monday=1 ...
         Dim dow As Integer = CInt(firstOfMonth.DayOfWeek)
-        ' Convertir a 0-based index con Monday=0 ... Sunday=6
         Dim offset As Integer = If(dow = 0, 6, dow - 1)
 
-        ' Agregamos celdas vacías para el offset
         For i As Integer = 1 To offset
             Dim emptyLbl As New Label With {
                 .Text = "",
@@ -142,23 +167,21 @@ Public Class PortalAlumnos
                 .Margin = New Padding(2)
             }
 
-            ' Color según asistencia
             If asistDict.ContainsKey(dateThis) Then
                 If asistDict(dateThis) Then
                     lblDay.BackColor = Color.LightGreen
-                    toolTip1.SetToolTip(lblDay, $"Fecha: {dateThis:yyyy-MM-dd}{vbCrLf}Presente")
+                    ToolTip1.SetToolTip(lblDay, $"Fecha: {dateThis:yyyy-MM-dd}{vbCrLf}Presente")
                 Else
                     lblDay.BackColor = Color.LightCoral
-                    toolTip1.SetToolTip(lblDay, $"Fecha: {dateThis:yyyy-MM-dd}{vbCrLf}Ausente")
+                    ToolTip1.SetToolTip(lblDay, $"Fecha: {dateThis:yyyy-MM-dd}{vbCrLf}Ausente")
                 End If
             Else
                 lblDay.BackColor = Color.LightGray
-                toolTip1.SetToolTip(lblDay, $"Fecha: {dateThis:yyyy-MM-dd}{vbCrLf}Sin registro")
+                ToolTip1.SetToolTip(lblDay, $"Fecha: {dateThis:yyyy-MM-dd}{vbCrLf}Sin registro")
             End If
 
-            ' Click para ver detalle (opcional)
             AddHandler lblDay.Click, Sub(s, ev)
-                                         MessageBox.Show($"Alumno: {alumno.nombre} {alumno.apellido}" & vbCrLf &
+                                         MessageBox.Show($"Alumno: {currentAlumno.nombre} {currentAlumno.apellido}" & vbCrLf &
                                                          $"Fecha: {dateThis:yyyy-MM-dd}" & vbCrLf &
                                                          $"Estado: " &
                                                          If(asistDict.ContainsKey(dateThis),
@@ -170,14 +193,6 @@ Public Class PortalAlumnos
         Next
     End Sub
 
-    ' Clase auxiliar para poner objetos en ComboBox
-    Private Class ComboItem
-        Public Property Text As String
-        Public Property Value As Object
-        Public Overrides Function ToString() As String
-            Return Text
-        End Function
-    End Class
 End Class
 
 ' Clases que mappean el JSON
@@ -187,6 +202,9 @@ End Class
 
 Public Class Alumno
     Public Property id As Integer
+    Public Property tipo As String
+    Public Property usuario As String
+    Public Property password As String
     Public Property nombre As String
     Public Property apellido As String
     Public Property fechaNacimiento As String

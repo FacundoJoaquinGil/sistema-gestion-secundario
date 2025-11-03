@@ -26,13 +26,13 @@ Partial Class PortalAlumnos
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PortalAlumnos))
         Label2 = New Label()
         PictureBox1 = New PictureBox()
-        cmbAlumnos = New ComboBox()
         flpCalendar = New FlowLayoutPanel()
+        lblLegend = New Label()
         btnPrev = New Button()
         btnNext = New Button()
         lblMonthYear = New Label()
         ToolTip1 = New ToolTip(components)
-        lblLegend = New Label()
+        lblUsuario = New Label()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         flpCalendar.SuspendLayout()
         SuspendLayout()
@@ -60,14 +60,6 @@ Partial Class PortalAlumnos
         PictureBox1.TabIndex = 5
         PictureBox1.TabStop = False
         ' 
-        ' cmbAlumnos
-        ' 
-        cmbAlumnos.FormattingEnabled = True
-        cmbAlumnos.Location = New Point(12, 104)
-        cmbAlumnos.Name = "cmbAlumnos"
-        cmbAlumnos.Size = New Size(121, 23)
-        cmbAlumnos.TabIndex = 6
-        ' 
         ' flpCalendar
         ' 
         flpCalendar.Controls.Add(lblLegend)
@@ -75,6 +67,15 @@ Partial Class PortalAlumnos
         flpCalendar.Name = "flpCalendar"
         flpCalendar.Size = New Size(760, 227)
         flpCalendar.TabIndex = 7
+        ' 
+        ' lblLegend
+        ' 
+        lblLegend.AutoSize = True
+        lblLegend.Location = New Point(3, 0)
+        lblLegend.Name = "lblLegend"
+        lblLegend.Size = New Size(41, 15)
+        lblLegend.TabIndex = 0
+        lblLegend.Text = "Label1"
         ' 
         ' btnPrev
         ' 
@@ -105,14 +106,16 @@ Partial Class PortalAlumnos
         lblMonthYear.Size = New Size(0, 20)
         lblMonthYear.TabIndex = 10
         ' 
-        ' lblLegend
+        ' lblUsuario
         ' 
-        lblLegend.AutoSize = True
-        lblLegend.Location = New Point(3, 0)
-        lblLegend.Name = "lblLegend"
-        lblLegend.Size = New Size(41, 15)
-        lblLegend.TabIndex = 0
-        lblLegend.Text = "Label1"
+        lblUsuario.AutoSize = True
+        lblUsuario.BackColor = Color.Transparent
+        lblUsuario.Font = New Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        lblUsuario.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        lblUsuario.Location = New Point(12, 100)
+        lblUsuario.Name = "lblUsuario"
+        lblUsuario.Size = New Size(0, 30)
+        lblUsuario.TabIndex = 11
         ' 
         ' PortalAlumnos
         ' 
@@ -120,11 +123,11 @@ Partial Class PortalAlumnos
         AutoScaleMode = AutoScaleMode.Font
         BackgroundImage = My.Resources.Resources.background
         ClientSize = New Size(784, 561)
+        Controls.Add(lblUsuario)
         Controls.Add(lblMonthYear)
         Controls.Add(btnNext)
         Controls.Add(btnPrev)
         Controls.Add(flpCalendar)
-        Controls.Add(cmbAlumnos)
         Controls.Add(PictureBox1)
         Controls.Add(Label2)
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
@@ -140,11 +143,11 @@ Partial Class PortalAlumnos
 
     Friend WithEvents Label2 As Label
     Friend WithEvents PictureBox1 As PictureBox
-    Friend WithEvents cmbAlumnos As ComboBox
     Friend WithEvents flpCalendar As FlowLayoutPanel
     Friend WithEvents btnPrev As Button
     Friend WithEvents lblLegend As Label
     Friend WithEvents btnNext As Button
     Friend WithEvents lblMonthYear As Label
     Friend WithEvents ToolTip1 As ToolTip
+    Friend WithEvents lblUsuario As Label
 End Class
