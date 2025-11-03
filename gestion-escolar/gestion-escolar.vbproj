@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FormCarga.Designer.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="libro1.ico" />
   </ItemGroup>
 

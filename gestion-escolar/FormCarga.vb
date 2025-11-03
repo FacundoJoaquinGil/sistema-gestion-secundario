@@ -1,8 +1,10 @@
+' Archivo: FormCarga.vb
 Imports System
 Imports System.Windows.Forms
 Imports System.ComponentModel
 
-Public Class FormCarga
+' (Asegúrate de que esta es la ÚNICA línea "Partial Public Class FormCarga")
+Partial Public Class FormCarga
     Inherits Form
 
     Private components As IContainer
@@ -11,6 +13,10 @@ Public Class FormCarga
     Private txtNota1 As TextBox
     Private lblNota2 As Label
     Private txtNota2 As TextBox
+    ' --- Controles para Nota 3 ---
+    Private lblNota3 As Label
+    Private txtNota3 As TextBox
+    ' --- Fin Controles Nota 3 ---
     Private WithEvents btnGuardarNotas As Button
 
     ' Variable local para guardar el alumno que recibimos
@@ -36,6 +42,7 @@ Public Class FormCarga
         End Try
     End Sub
 
+    ' --- ESTE ES EL MÉTODO DE DISEÑO ACTUALIZADO ---
     Private Sub InitializeComponent()
         components = New Container()
         lblNombreAlumno = New Label()
@@ -44,6 +51,9 @@ Public Class FormCarga
         lblNota2 = New Label()
         txtNota2 = New TextBox()
         btnGuardarNotas = New Button()
+        ' --- Instanciar controles ---
+        lblNota3 = New Label()
+        txtNota3 = New TextBox()
 
         SuspendLayout()
         '
@@ -88,23 +98,41 @@ Public Class FormCarga
         txtNota2.Size = New Drawing.Size(100, 27)
         txtNota2.TabIndex = 4
         '
+        ' lblNota3
+        '
+        lblNota3.AutoSize = True
+        lblNota3.Location = New Drawing.Point(12, 135)
+        lblNota3.Name = "lblNota3"
+        lblNota3.Size = New Drawing.Size(53, 20)
+        lblNota3.TabIndex = 5
+        lblNota3.Text = "Nota3:"
+        '
+        ' txtNota3
+        '
+        txtNota3.Location = New Drawing.Point(80, 132)
+        txtNota3.Name = "txtNota3"
+        txtNota3.Size = New Drawing.Size(100, 27)
+        txtNota3.TabIndex = 6
+        '
         ' btnGuardarNotas
         '
-        btnGuardarNotas.Location = New Drawing.Point(80, 140)
+        btnGuardarNotas.Location = New Drawing.Point(80, 180)
         btnGuardarNotas.Name = "btnGuardarNotas"
         btnGuardarNotas.Size = New Drawing.Size(120, 30)
-        btnGuardarNotas.TabIndex = 5
+        btnGuardarNotas.TabIndex = 7
         btnGuardarNotas.Text = "Guardar Notas"
         btnGuardarNotas.UseVisualStyleBackColor = True
         '
         ' FormCarga
         '
-        ClientSize = New Drawing.Size(320, 200)
+        ClientSize = New Drawing.Size(320, 240)
         Controls.Add(lblNombreAlumno)
         Controls.Add(lblNota1)
         Controls.Add(txtNota1)
         Controls.Add(lblNota2)
         Controls.Add(txtNota2)
+        Controls.Add(lblNota3)
+        Controls.Add(txtNota3)
         Controls.Add(btnGuardarNotas)
         FormBorderStyle = FormBorderStyle.FixedDialog
         MaximizeBox = False
@@ -126,6 +154,7 @@ Public Class FormCarga
             ' Rellenamos los TextBox con las notas que ya tiene
             txtNota1.Text = AlumnoActual.Nota1.ToString()
             txtNota2.Text = AlumnoActual.Nota2.ToString()
+            txtNota3.Text = AlumnoActual.Nota3.ToString()
         End If
     End Sub
 
@@ -136,6 +165,7 @@ Public Class FormCarga
                 ' Actualizamos el OBJETO en la lista GLOBAL
                 AlumnoActual.Nota1 = Convert.ToDouble(txtNota1.Text)
                 AlumnoActual.Nota2 = Convert.ToDouble(txtNota2.Text)
+                AlumnoActual.Nota3 = Convert.ToDouble(txtNota3.Text)
 
                 ' Guardamos cambios a disco
                 DatosGlobales.SaveToFile()
@@ -148,5 +178,6 @@ Public Class FormCarga
         Else
             MessageBox.Show("Error: No se seleccionó ningún alumno.")
         End If
-    End Sub
-End Class
+    End Sub ' <-- ESTE 'END SUB' FALTABA
+
+End Class ' <-- ESTE 'END CLASS' FALTABA
