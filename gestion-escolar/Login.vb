@@ -64,9 +64,9 @@ Public Class Login
     End Sub
 
     ' ---- Botón Login ----
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
         Dim user As String = TextBox1.Text.Trim()
-        Dim pass As String = TextBox2.Text.Trim()
+        Dim pass As String = txtPassword.Text.Trim()
 
         If data Is Nothing Then
             MessageBox.Show("No se pudieron cargar los datos. Verifica el archivo JSON.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -96,27 +96,27 @@ Public Class Login
             Return
         End If
 
-        ' Buscar en profesores (usuario no sensible a mayúsculas)
+
         Dim profesor = data.profesores?.FirstOrDefault(Function(p) _
             Not String.IsNullOrEmpty(p.usuario) AndAlso
             p.usuario.Equals(user, StringComparison.OrdinalIgnoreCase) AndAlso
             p.password = pass)
 
         If profesor IsNot Nothing Then
-            ' Login exitoso como profesor
+
             MessageBox.Show($"Bienvenido profesor {profesor.nombre} {profesor.apellido} - Materia: {If(String.IsNullOrEmpty(profesor.materia), "(sin materia)", profesor.materia)}", "Ingreso correcto", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-            ' Aquí podés abrir un formulario de profesor (PortalProfesores) si lo tenés:
-            ' Dim portalProf As New PortalProfesores()
-            ' portalProf.UsuarioActual = profesor.usuario
-            ' portalProf.Show()
-            ' Me.Hide()
+            Dim portalProf As New FormMenu()
+
+            'portalProf.UsuarioActual = profesor.usuario //por si quiero mostrar el nombre del profe
+
+            portalProf.Show()
+            Me.Hide()
 
             Return
         End If
 
-        ' Si llegamos aquí, no se encontró usuario
-        MessageBox.Show("Usuario o contraseña incorrectos", "Login fallido", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        MessageBox.Show("Usuario o contraseña incorrectos", "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
     End Sub
 
 End Class

@@ -10,7 +10,7 @@ Public Class PortalAlumnos
     Private db As RootDB
     Private currentMonth As Integer
     Private currentYear As Integer
-    Private currentAlumno As Alumno ' Alumno actualmente mostrado
+    Private currentAlumno As AlumnoModel ' Alumno actualmente mostrado (renombrado)
 
     Private Sub PortalAlumnos_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Inicializamos mes actual
@@ -193,14 +193,22 @@ Public Class PortalAlumnos
         Next
     End Sub
 
+    Private Sub BtnVolver_Click(sender As Object, e As EventArgs) Handles BtnVolver.Click
+
+        Dim volverLogin As New Login()
+        volverLogin.Show()
+        Me.Hide()
+
+    End Sub
+
 End Class
 
 ' Clases que mappean el JSON
 Public Class RootDB
-    Public Property alumnos As List(Of Alumno)
+    Public Property alumnos As List(Of AlumnoModel)
 End Class
 
-Public Class Alumno
+Public Class AlumnoModel
     Public Property id As Integer
     Public Property tipo As String
     Public Property usuario As String

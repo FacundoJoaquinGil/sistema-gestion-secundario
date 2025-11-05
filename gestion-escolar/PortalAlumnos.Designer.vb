@@ -33,6 +33,7 @@ Partial Class PortalAlumnos
         lblMonthYear = New Label()
         ToolTip1 = New ToolTip(components)
         lblUsuario = New Label()
+        BtnVolver = New Button()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         flpCalendar.SuspendLayout()
         SuspendLayout()
@@ -53,9 +54,9 @@ Partial Class PortalAlumnos
         ' 
         PictureBox1.BackColor = Color.Transparent
         PictureBox1.Image = My.Resources.Resources.usuario
-        PictureBox1.Location = New Point(256, 12)
+        PictureBox1.Location = New Point(249, 27)
         PictureBox1.Name = "PictureBox1"
-        PictureBox1.Size = New Size(63, 63)
+        PictureBox1.Size = New Size(52, 54)
         PictureBox1.SizeMode = PictureBoxSizeMode.Zoom
         PictureBox1.TabIndex = 5
         PictureBox1.TabStop = False
@@ -80,7 +81,7 @@ Partial Class PortalAlumnos
         ' btnPrev
         ' 
         btnPrev.Font = New Font("Segoe UI Black", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        btnPrev.Location = New Point(88, 402)
+        btnPrev.Location = New Point(205, 402)
         btnPrev.Name = "btnPrev"
         btnPrev.Size = New Size(45, 39)
         btnPrev.TabIndex = 8
@@ -117,12 +118,25 @@ Partial Class PortalAlumnos
         lblUsuario.Size = New Size(0, 30)
         lblUsuario.TabIndex = 11
         ' 
+        ' BtnVolver
+        ' 
+        BtnVolver.BackColor = Color.MediumOrchid
+        BtnVolver.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        BtnVolver.ForeColor = Color.White
+        BtnVolver.Location = New Point(665, 516)
+        BtnVolver.Name = "BtnVolver"
+        BtnVolver.Size = New Size(108, 35)
+        BtnVolver.TabIndex = 13
+        BtnVolver.Text = "VOLVER"
+        BtnVolver.UseVisualStyleBackColor = False
+        ' 
         ' PortalAlumnos
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackgroundImage = My.Resources.Resources.background
         ClientSize = New Size(784, 561)
+        Controls.Add(BtnVolver)
         Controls.Add(lblUsuario)
         Controls.Add(lblMonthYear)
         Controls.Add(btnNext)
@@ -150,4 +164,5 @@ Partial Class PortalAlumnos
     Friend WithEvents lblMonthYear As Label
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents lblUsuario As Label
+    Friend WithEvents BtnVolver As Button
 End Class

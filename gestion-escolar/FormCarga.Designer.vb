@@ -14,7 +14,7 @@ Partial Class FormCarga
         End Try
     End Sub
 
-    'Requerido por el Diseñador de Windows Forms
+    'Requerido por el Dise?ador de Windows Forms
     Private components As System.ComponentModel.IContainer
 
     Friend WithEvents lblNombreAlumno As System.Windows.Forms.Label
@@ -26,9 +26,9 @@ Partial Class FormCarga
     Friend WithEvents txtNota3 As System.Windows.Forms.TextBox
     Friend WithEvents btnGuardarNotas As System.Windows.Forms.Button
 
-    'NOTA: el Diseñador necesita el siguiente procedimiento
-    'Se puede modificar usando el Diseñador de Windows Forms. 
-    'No lo modifique con el editor de código.
+    'NOTA: el Dise?ador necesita el siguiente procedimiento
+    'Se puede modificar usando el Dise?ador de Windows Forms. 
+    'No lo modifique con el editor de c?digo.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
@@ -128,4 +128,4 @@ Partial Class FormCarga
         Me.ResumeLayout(False)
         Me.PerformLayout()
     End Sub
-    End Partial Class
+End Class

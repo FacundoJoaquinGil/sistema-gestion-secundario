@@ -7,6 +7,7 @@ Public Class FormMenu
     ' Controles del formulario
     Private WithEvents btnAgregarAlumno As Button
     Private WithEvents btnRefrescar As Button
+    Friend WithEvents BtnVolver2 As Button
     Private WithEvents dgvAlumnos As DataGridView
 
     Public Sub New()
@@ -14,35 +15,66 @@ Public Class FormMenu
     End Sub
 
     Private Sub InitializeComponent()
-        ' (Este código de diseño no cambia)
-        Me.Text = "Panel de Gestión de Alumnos"
-        Me.StartPosition = FormStartPosition.CenterScreen
-        Me.ClientSize = New Drawing.Size(900, 600)
         btnAgregarAlumno = New Button()
-        btnAgregarAlumno.Name = "btnAgregarAlumno"
-        btnAgregarAlumno.Text = "Agregar Alumno"
-        btnAgregarAlumno.Size = New Drawing.Size(120, 30)
-        btnAgregarAlumno.Location = New Drawing.Point(10, 10)
-        btnAgregarAlumno.Anchor = AnchorStyles.Top Or AnchorStyles.Left
         btnRefrescar = New Button()
-        btnRefrescar.Name = "btnRefrescar"
-        btnRefrescar.Text = "Refrescar Lista"
-        btnRefrescar.Size = New Drawing.Size(120, 30)
-        btnRefrescar.Location = New Drawing.Point(140, 10)
-        btnRefrescar.Anchor = AnchorStyles.Top Or AnchorStyles.Left
         dgvAlumnos = New DataGridView()
-        dgvAlumnos.Name = "dgvAlumnos"
-        dgvAlumnos.Location = New Drawing.Point(10, 50)
-        dgvAlumnos.Size = New Drawing.Size(880, 540)
-        dgvAlumnos.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        BtnVolver2 = New Button()
+        CType(dgvAlumnos, System.ComponentModel.ISupportInitialize).BeginInit()
+        SuspendLayout()
+        ' 
+        ' btnAgregarAlumno
+        ' 
+        btnAgregarAlumno.Location = New Point(10, 10)
+        btnAgregarAlumno.Name = "btnAgregarAlumno"
+        btnAgregarAlumno.Size = New Size(120, 30)
+        btnAgregarAlumno.TabIndex = 0
+        btnAgregarAlumno.Text = "Agregar Alumno"
+        ' 
+        ' btnRefrescar
+        ' 
+        btnRefrescar.Location = New Point(140, 10)
+        btnRefrescar.Name = "btnRefrescar"
+        btnRefrescar.Size = New Size(120, 30)
+        btnRefrescar.TabIndex = 1
+        btnRefrescar.Text = "Refrescar Lista"
+        ' 
+        ' dgvAlumnos
+        ' 
         dgvAlumnos.AllowUserToAddRows = False
         dgvAlumnos.AllowUserToDeleteRows = False
-        dgvAlumnos.ReadOnly = True ' Cambiado a True
-        dgvAlumnos.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        dgvAlumnos.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         dgvAlumnos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-        Me.Controls.Add(btnAgregarAlumno)
-        Me.Controls.Add(btnRefrescar)
-        Me.Controls.Add(dgvAlumnos)
+        dgvAlumnos.Location = New Point(10, 50)
+        dgvAlumnos.Name = "dgvAlumnos"
+        dgvAlumnos.ReadOnly = True
+        dgvAlumnos.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        dgvAlumnos.Size = New Size(880, 492)
+        dgvAlumnos.TabIndex = 2
+        ' 
+        ' BtnVolver2
+        ' 
+        BtnVolver2.BackColor = Color.MediumOrchid
+        BtnVolver2.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        BtnVolver2.ForeColor = Color.White
+        BtnVolver2.Location = New Point(783, 556)
+        BtnVolver2.Name = "BtnVolver2"
+        BtnVolver2.Size = New Size(108, 35)
+        BtnVolver2.TabIndex = 14
+        BtnVolver2.Text = "VOLVER"
+        BtnVolver2.UseVisualStyleBackColor = False
+        ' 
+        ' FormMenu
+        ' 
+        ClientSize = New Size(900, 600)
+        Controls.Add(BtnVolver2)
+        Controls.Add(btnAgregarAlumno)
+        Controls.Add(btnRefrescar)
+        Controls.Add(dgvAlumnos)
+        Name = "FormMenu"
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "Panel de Gestión de Alumnos"
+        CType(dgvAlumnos, System.ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
     End Sub
 
     ' ----1. CUANDO EL FORMULARIO SE CARGA ----
@@ -192,5 +224,13 @@ Public Class FormMenu
         ' Cuando se cierra, refrescamos la lista y guardamos
         CargarDatosAlGrid()
         DatosGlobales.SaveToFile()
+    End Sub
+
+    Private Sub BtnVolver2_Click(sender As Object, e As EventArgs) Handles BtnVolver2.Click
+
+        Dim volverLogin As New Login()
+        volverLogin.Show()
+        Me.Hide()
+
     End Sub
 End Class

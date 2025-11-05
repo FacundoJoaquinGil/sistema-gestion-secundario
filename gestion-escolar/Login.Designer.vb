@@ -54,7 +54,7 @@ Partial Class Login
         ' 
         Label1.AutoSize = True
         Label1.BackColor = Color.Transparent
-        Label1.Font = New Font("Segoe UI", 24.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label1.Font = New Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label1.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label1.Location = New Point(293, 121)
         Label1.Name = "Label1"
@@ -93,7 +93,7 @@ Partial Class Login
         ' Label5
         ' 
         Label5.AutoSize = True
-        Label5.Font = New Font("Segoe UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Label5.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Label5.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label5.Location = New Point(133, 58)
         Label5.Name = "Label5"
@@ -120,10 +120,10 @@ Partial Class Login
         txtPassword.ForeColor = Color.Gray
         txtPassword.Location = New Point(159, 192)
         txtPassword.Name = "txtPassword"
+        txtPassword.PasswordChar = "*"c
         txtPassword.PlaceholderText = " ejemplo:1234"
         txtPassword.Size = New Size(209, 25)
         txtPassword.TabIndex = 6
-        txtPassword.PasswordChar = "*"c
         ' 
         ' Label3
         ' 
@@ -164,7 +164,7 @@ Partial Class Login
         ' 
         Label6.AutoSize = True
         Label6.BackColor = Color.Transparent
-        Label6.Font = New Font("Segoe UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Label6.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Label6.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label6.Location = New Point(337, 166)
         Label6.Name = "Label6"
@@ -174,7 +174,7 @@ Partial Class Login
         ' 
         ' Login
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = Color.White
         BackgroundImage = My.Resources.Resources.background
