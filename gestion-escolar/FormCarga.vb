@@ -2,12 +2,14 @@
 Imports System
 Imports System.Windows.Forms
 Imports System.ComponentModel
+Imports Newtonsoft.Json.Linq
 
 Partial Public Class FormCarga
     Inherits Form
 
     ' Variable local para guardar el alumno que recibimos
     Private AlumnoActual As Alumno
+    Private AlumnoUsuario As String ' opcional, para identificar en JSON
 
     ' Constructor: recibe el alumno desde otro formulario
     Public Sub New(alumno As Alumno)
@@ -33,7 +35,45 @@ Partial Public Class FormCarga
                 AlumnoActual.Nota2 = Convert.ToDouble(txtNota2.Text)
                 AlumnoActual.Nota3 = Convert.ToDouble(txtNota3.Text)
 
-                DatosGlobales.SaveToFile()
+                ' Intentamos actualizar en db-alumnos.json si encontramos el usuario por nombre completo
+                Try
+                    Dim all As JArray = DataStore.GetAlumnosJArray()
+                    Dim encontrado As JObject = Nothing
+                    For Each a As JObject In all
+                        Dim nombreFull As String = $"{a("nombre")?.ToString()} {a("apellido")?.ToString()}".Trim()
+                        If String.Equals(nombreFull, AlumnoActual.NombreCompleto, StringComparison.OrdinalIgnoreCase) Then
+                            encontrado = a
+                            Exit For
+                        End If
+                    Next
+                    If encontrado IsNot Nothing Then
+                        ' Guardar notas en la primera materia si existe, o crear una
+                        Dim materias As JArray = TryCast(encontrado("materias"), JArray)
+                        If materias Is Nothing Then
+                            materias = New JArray()
+                            encontrado("materias") = materias
+                        End If
+                        Dim materiaObj As JObject = Nothing
+                        If materias.Count > 0 Then materiaObj = TryCast(materias(0), JObject)
+                        If materiaObj Is Nothing Then
+                            materiaObj = New JObject()
+                            materiaObj("idMateria") = 1
+                            materiaObj("nombreMateria") = "Materia1"
+                            materiaObj("notas") = New JArray()
+                            materias.Add(materiaObj)
+                        End If
+                        Dim notasArr As JArray = TryCast(materiaObj("notas"), JArray)
+                        notasArr = New JArray({AlumnoActual.Nota1, AlumnoActual.Nota2, AlumnoActual.Nota3})
+                        materiaObj("notas") = notasArr
+                        Dim root As JObject = DataStore.LoadRootJObject()
+                        root("alumnos") = all
+                        DataStore.SaveRootJObject(root)
+                    Else
+                        ' No encontrado: no hacemos nada en JSON
+                    End If
+                Catch ex As Exception
+                    ' Ignoramos error de persistencia por ahora
+                End Try
 
                 MessageBox.Show("Notas guardadas correctamente.")
                 Me.Close()

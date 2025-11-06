@@ -1,5 +1,8 @@
 ' Archivo: FormMenu.vb
 Imports System.Windows.Forms
+Imports System.IO
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 Public Class FormMenu
     Inherits Form
@@ -9,6 +12,12 @@ Public Class FormMenu
     Private WithEvents btnRefrescar As Button
     Friend WithEvents BtnVolver2 As Button
     Private WithEvents dgvAlumnos As DataGridView
+
+    ' Nueva propiedad: materia del profesor (si se abre por profesor)
+    Public Property MateriaActual As String = String.Empty
+
+    ' Lista interna de alumnos cargados desde db-alumnos.json (JObjects)
+    Private AlumnosJson As New List(Of JObject)()
 
     Public Sub New()
         InitializeComponent()
@@ -132,83 +141,118 @@ Public Class FormMenu
     ' ----3. SUB-RUTINA PARA CARGAR/RECARGAR LOS ALUMNOS ----
     Private Sub CargarDatosAlGrid()
         dgvAlumnos.Rows.Clear() ' Limpiamos la tabla
+        AlumnosJson.Clear()
 
-        ' Leemos la lista GLOBAL de alumnos
-        For Each alumno As Alumno In DatosGlobales.ListaAlumnos
-            ' Usamos la función que creamos en la Clase Alumno
-            Dim porcentaje As Double = alumno.PorcentajeAsistencia()
-            Dim promedio As Double = alumno.CalcularPromedio()
+        Try
+            Dim jAlumnos As JArray = DataStore.GetAlumnosByMateria(MateriaActual)
+            For Each ja As JObject In jAlumnos
+                AlumnosJson.Add(ja)
 
-            ' Agregamos la fila a la tabla
-            dgvAlumnos.Rows.Add(alumno.NombreCompleto, porcentaje.ToString("N2") & " %", promedio.ToString("N2"))
-        Next
+                ' Nombre
+                Dim nombreFull As String = $"{ja("nombre")?.ToString()} {ja("apellido")?.ToString()}"
+
+                ' Promedio: tomar la primera materia o la materia actual
+                Dim promedio As Double = 0
+                Dim materiasArr As JArray = TryCast(ja("materias"), JArray)
+                If materiasArr IsNot Nothing AndAlso materiasArr.Count > 0 Then
+                    Dim materiaMatch As JObject = Nothing
+                    If Not String.IsNullOrWhiteSpace(MateriaActual) Then
+                        For Each jm As JObject In materiasArr
+                            If String.Equals(jm("nombreMateria")?.ToString(), MateriaActual, StringComparison.OrdinalIgnoreCase) Then
+                                materiaMatch = jm
+                                Exit For
+                            End If
+                        Next
+                    End If
+                    If materiaMatch Is Nothing Then materiaMatch = TryCast(materiasArr(0), JObject)
+                    If materiaMatch IsNot Nothing Then
+                        Dim notasArr As JArray = TryCast(materiaMatch("notas"), JArray)
+                        If notasArr IsNot Nothing AndAlso notasArr.Count > 0 Then
+                            Dim sum As Double = 0
+                            For Each n In notasArr
+                                sum += CDbl(n.ToString())
+                            Next
+                            promedio = sum / notasArr.Count
+                        End If
+                    End If
+                End If
+
+                ' Asistencia
+                Dim porcentaje As Double = 100.0
+                Dim asistArr As JArray = TryCast(ja("asistencias"), JArray)
+                If asistArr IsNot Nothing AndAlso asistArr.Count > 0 Then
+                    Dim totalPresentes As Integer = 0
+                    For Each jas As JObject In asistArr
+                        If jas("presente") IsNot Nothing AndAlso CBool(jas("presente")) Then totalPresentes += 1
+                    Next
+                    porcentaje = (totalPresentes * 100.0) / asistArr.Count
+                End If
+
+                dgvAlumnos.Rows.Add(nombreFull, porcentaje.ToString("N2") & " %", promedio.ToString("N2"))
+            Next
+        Catch ex As Exception
+            MessageBox.Show("Error leyendo db-alumnos.json: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     ' ----4. MANEJAR LOS CLICS EN LOS BOTONES DEL GRID ----
     ' --- LÓGICA COMPLETAMENTE NUEVA ---
     Private Sub dgvAlumnos_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAlumnos.CellClick
-        If e.RowIndex < 0 Then Return ' Si hacen clic en la cabecera, no hacemos nada
+        If e.RowIndex < 0 Then Return
 
-        ' 1. Obtenemos el nombre del alumno de la fila
         Dim nombreAlumno As String = dgvAlumnos.Rows(e.RowIndex).Cells("Nombre").Value.ToString()
+        Dim index As Integer = e.RowIndex
+        If index < 0 OrElse index >= AlumnosJson.Count Then
+            MessageBox.Show("Índice inválido de alumno.")
+            Return
+        End If
 
-        ' 2. Buscamos a ese alumno en nuestra lista GLOBAL
-        Dim alumnoSeleccionado As Alumno = DatosGlobales.ListaAlumnos.Find(Function(a) a.NombreCompleto = nombreAlumno)
-        If alumnoSeleccionado Is Nothing Then Return
+        Dim alumnoJson As JObject = AlumnosJson(index)
 
-        ' 3. Vemos en qué COLUMNA (botón) se hizo clic
         Dim nombreColumna As String = dgvAlumnos.Columns(e.ColumnIndex).Name
 
-        ' === Decidimos qué hacer ===
         Select Case nombreColumna
             Case "btnDetalle"
-                ' ABRE EL NUEVO FORMULARIO DE DETALLE
-                ' (Este es el archivo que OMITIMOS)
-                Dim formDetalle As New FormDetalleAsistencia(alumnoSeleccionado)
+                ' Mostrar detalle: convertimos a objeto Alumno temporal
+                Dim alumnoObj As New Alumno($"{alumnoJson("nombre")?.ToString()} {alumnoJson("apellido")?.ToString()}")
+                Dim asistArr As JArray = TryCast(alumnoJson("asistencias"), JArray)
+                If asistArr IsNot Nothing Then
+                    For Each jas As JObject In asistArr
+                        Dim dt As Date
+                        If Date.TryParse(jas("fecha")?.ToString(), dt) Then
+                            alumnoObj.RegistrosAsistencia.Add(New AsistenciaRegistro(dt, If(CBool(jas("presente")), EstadoAsistencia.Presente, EstadoAsistencia.Ausente)))
+                        End If
+                    Next
+                End If
+                Dim formDetalle As New FormDetalleAsistencia(alumnoObj)
                 formDetalle.ShowDialog()
 
             Case "btnNotas"
-                ' ABRE EL FORMULARIO DE CARGA DE NOTAS
-                Dim formCarga As New FormCarga(alumnoSeleccionado)
-                formCarga.ShowDialog()
-                CargarDatosAlGrid() ' Recargamos por si cambió el promedio
+                ' No implementado para JSON-modales
+                MessageBox.Show("Edición de notas no disponible para alumnos cargados desde JSON en esta vista.")
 
             Case "btnPresente"
-                ' CARGA ASISTENCIA (Presente)
-                MarcarAsistencia(alumnoSeleccionado, EstadoAsistencia.Presente)
+                MarcarAsistenciaJson(alumnoJson, True)
 
             Case "btnAusente"
-                ' CARGA ASISTENCIA (Ausente)
-                MarcarAsistencia(alumnoSeleccionado, EstadoAsistencia.Ausente)
+                MarcarAsistenciaJson(alumnoJson, False)
         End Select
     End Sub
 
-    ' --- NUEVA FUNCIÓN: Lógica para marcar asistencia HOY ---
-    Private Sub MarcarAsistencia(alumno As Alumno, estado As EstadoAsistencia)
-        Dim hoy As Date = Date.Now.Date ' Obtiene la fecha de hoy, sin la hora
-
-        ' 1. Busca si ya existe un registro para HOY
-        Dim registroHoy As AsistenciaRegistro = alumno.RegistrosAsistencia.Find(Function(r) r.Fecha.Date = hoy)
-
-        If registroHoy IsNot Nothing Then
-            ' 2. Si existe, preguntamos si quiere actualizar
-            Dim msg As String = $"Ya se marcó '{registroHoy.Estado.ToString()}' para {alumno.NombreCompleto} el día de hoy. ¿Desea cambiarlo a '{estado.ToString()}'?"
-            If MessageBox.Show(msg, "Actualizar Asistencia", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                registroHoy.Estado = estado
-                MessageBox.Show("Asistencia actualizada.")
-            Else
-                Return ' El usuario canceló
-            End If
-        Else
-            ' 3. Si no existe, creamos un registro nuevo
-            Dim nuevoRegistro As New AsistenciaRegistro(hoy, estado)
-            alumno.RegistrosAsistencia.Add(nuevoRegistro)
-            MessageBox.Show($"Se marcó '{estado.ToString()}' a {alumno.NombreCompleto}", "Asistencia")
+    Private Sub MarcarAsistenciaJson(alumnoJson As JObject, presente As Boolean)
+        Dim usuario As String = alumnoJson("usuario")?.ToString()
+        If String.IsNullOrWhiteSpace(usuario) Then
+            MessageBox.Show("No se puede identificar al alumno para guardar asistencia.")
+            Return
         End If
-
-        ' 4. Refrescamos la tabla y guardamos en el JSON
+        Dim fecha As Date = Date.Now.Date
+        Try
+            DataStore.UpdateAsistencia(usuario, fecha, presente)
+            MessageBox.Show("Asistencia guardada.")
+        Catch ex As Exception
+            MessageBox.Show("Error al guardar asistencia: " & ex.Message)
+        End Try
         CargarDatosAlGrid()
-        DatosGlobales.SaveToFile()
     End Sub
 
     ' ----5. Botón de "Refrescar" ----
@@ -218,19 +262,14 @@ Public Class FormMenu
 
     ' ----6. Botón Agregar Alumno ----
     Private Sub btnAgregarAlumno_Click(sender As Object, e As EventArgs) Handles btnAgregarAlumno.Click
-        ' (Este código no cambia)
         Dim formAgregar As New FormAgregarAlumno()
         formAgregar.ShowDialog()
-        ' Cuando se cierra, refrescamos la lista y guardamos
         CargarDatosAlGrid()
-        DatosGlobales.SaveToFile()
     End Sub
 
     Private Sub BtnVolver2_Click(sender As Object, e As EventArgs) Handles BtnVolver2.Click
-
         Dim volverLogin As New Login()
         volverLogin.Show()
         Me.Hide()
-
     End Sub
 End Class

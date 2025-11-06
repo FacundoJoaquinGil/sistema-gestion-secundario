@@ -1,39 +1,22 @@
 ﻿Imports System.Globalization
 Imports System.IO
 Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 Public Class PortalAlumnos
 
     ' Propiedad pública para recibir el usuario logueado desde Login
     Public Property UsuarioActual As String
 
-    Private db As RootDB
     Private currentMonth As Integer
     Private currentYear As Integer
-    Private currentAlumno As AlumnoModel ' Alumno actualmente mostrado (renombrado)
+    Private currentAlumno As JObject ' ahora trabajamos con JObject obtenido desde DataStore
 
     Private Sub PortalAlumnos_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Inicializamos mes actual
         Dim now = DateTime.Now
         currentMonth = now.Month
         currentYear = now.Year
-
-        ' Cargar DB
-        Dim rutaJson As String = Path.Combine(Application.StartupPath, "db-alumnos.json")
-        If Not File.Exists(rutaJson) Then
-            MessageBox.Show("No se encontró db-alumnos.json en: " & rutaJson, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Me.Close()
-            Return
-        End If
-
-        Dim json As String = File.ReadAllText(rutaJson)
-        Try
-            db = JsonConvert.DeserializeObject(Of RootDB)(json)
-        Catch ex As Exception
-            MessageBox.Show("Error parseando JSON: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Me.Close()
-            Return
-        End Try
 
         ' Verificar que se pasó el usuario desde Login
         If String.IsNullOrWhiteSpace(UsuarioActual) Then
@@ -42,34 +25,32 @@ Public Class PortalAlumnos
             Return
         End If
 
-        If db Is Nothing OrElse db.alumnos Is Nothing OrElse db.alumnos.Count = 0 Then
-            MessageBox.Show("No hay alumnos cargados en la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        ' Obtenemos alumno desde DataStore
+        Try
+            Dim alumnoJ As JObject = DataStore.GetAlumnoByUsuario(UsuarioActual)
+            If alumnoJ Is Nothing Then
+                MessageBox.Show($"No se encontró el alumno con usuario '{UsuarioActual}'.", "Usuario no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Me.Close()
+                Return
+            End If
+            currentAlumno = alumnoJ
+        Catch ex As Exception
+            MessageBox.Show("Error al leer db-alumnos.json: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Me.Close()
             Return
-        End If
-
-        ' Buscar por campo 'usuario' (case-insensitive)
-        currentAlumno = db.alumnos.FirstOrDefault(Function(a) _
-            Not String.IsNullOrEmpty(a.usuario) AndAlso
-            a.usuario.Equals(UsuarioActual, StringComparison.OrdinalIgnoreCase))
-
-        If currentAlumno Is Nothing Then
-            MessageBox.Show($"No se encontró el alumno con usuario '{UsuarioActual}'.", "Usuario no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Me.Close()
-            Return
-        End If
+        End Try
 
         ' Poner mensaje de bienvenida en lblUsuario (si existe)
         If Me.Controls.ContainsKey("lblUsuario") Then
-            CType(Me.Controls("lblUsuario"), Label).Text = $"Bienvenido {currentAlumno.nombre} {currentAlumno.apellido}"
+            CType(Me.Controls("lblUsuario"), Label).Text = $"Bienvenido {currentAlumno("nombre")?.ToString()} {currentAlumno("apellido")?.ToString()}"
         End If
 
         ' Mostrar datos básicos del alumno en etiquetas (si existen)
         If Me.Controls.ContainsKey("lblNombre") Then
-            CType(Me.Controls("lblNombre"), Label).Text = $"{currentAlumno.nombre} {currentAlumno.apellido}"
+            CType(Me.Controls("lblNombre"), Label).Text = $"{currentAlumno("nombre")?.ToString()} {currentAlumno("apellido")?.ToString()}"
         End If
         If Me.Controls.ContainsKey("lblFechaNacimiento") Then
-            CType(Me.Controls("lblFechaNacimiento"), Label).Text = currentAlumno.fechaNacimiento
+            CType(Me.Controls("lblFechaNacimiento"), Label).Text = currentAlumno("fechaNacimiento")?.ToString()
         End If
 
         lblLegend.Text = "Verde = Presente — Rojo = Ausente"
@@ -117,11 +98,12 @@ Public Class PortalAlumnos
         End If
 
         Dim asistDict As New Dictionary(Of DateTime, Boolean)
-        If currentAlumno.asistencias IsNot Nothing Then
-            For Each a In currentAlumno.asistencias
+        Dim asistenciasArr As JArray = TryCast(currentAlumno("asistencias"), JArray)
+        If asistenciasArr IsNot Nothing Then
+            For Each a As JObject In asistenciasArr
                 Dim dt As DateTime
-                If DateTime.TryParseExact(a.fecha, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, dt) Then
-                    asistDict(dt.Date) = a.presente
+                If DateTime.TryParseExact(a("fecha")?.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, dt) Then
+                    asistDict(dt.Date) = If(a("presente") IsNot Nothing AndAlso CBool(a("presente")), True, False)
                 End If
             Next
         End If
@@ -181,7 +163,7 @@ Public Class PortalAlumnos
             End If
 
             AddHandler lblDay.Click, Sub(s, ev)
-                                         MessageBox.Show($"Alumno: {currentAlumno.nombre} {currentAlumno.apellido}" & vbCrLf &
+                                         MessageBox.Show($"Alumno: {currentAlumno("nombre")?.ToString()} {currentAlumno("apellido")?.ToString()}" & vbCrLf &
                                                          $"Fecha: {dateThis:yyyy-MM-dd}" & vbCrLf &
                                                          $"Estado: " &
                                                          If(asistDict.ContainsKey(dateThis),
@@ -201,32 +183,4 @@ Public Class PortalAlumnos
 
     End Sub
 
-End Class
-
-' Clases que mappean el JSON
-Public Class RootDB
-    Public Property alumnos As List(Of AlumnoModel)
-End Class
-
-Public Class AlumnoModel
-    Public Property id As Integer
-    Public Property tipo As String
-    Public Property usuario As String
-    Public Property password As String
-    Public Property nombre As String
-    Public Property apellido As String
-    Public Property fechaNacimiento As String
-    Public Property materias As List(Of Materia)
-    Public Property asistencias As List(Of Asistencia)
-End Class
-
-Public Class Materia
-    Public Property idMateria As Integer
-    Public Property nombreMateria As String
-    Public Property notas As List(Of Double)
-End Class
-
-Public Class Asistencia
-    Public Property fecha As String
-    Public Property presente As Boolean
 End Class
