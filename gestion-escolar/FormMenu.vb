@@ -228,8 +228,14 @@ Public Class FormMenu
                 formDetalle.ShowDialog()
 
             Case "btnNotas"
-                ' No implementado para JSON-modales
-                MessageBox.Show("Edición de notas no disponible para alumnos cargados desde JSON en esta vista.")
+                ' Abrir FormCarga para editar notas en JSON
+                Try
+                    Dim formCarga As New FormCarga(alumnoJson, If(String.IsNullOrWhiteSpace(MateriaActual), Nothing, MateriaActual))
+                    formCarga.ShowDialog()
+                    CargarDatosAlGrid()
+                Catch ex As Exception
+                    MessageBox.Show("Error al abrir editor de notas: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
 
             Case "btnPresente"
                 MarcarAsistenciaJson(alumnoJson, True)
@@ -262,8 +268,9 @@ Public Class FormMenu
 
     ' ----6. Botón Agregar Alumno ----
     Private Sub btnAgregarAlumno_Click(sender As Object, e As EventArgs) Handles btnAgregarAlumno.Click
-        Dim formAgregar As New FormAgregarAlumno()
+        Dim formAgregar As New FormAgregarAlumno(If(String.IsNullOrWhiteSpace(MateriaActual), Nothing, MateriaActual))
         formAgregar.ShowDialog()
+        ' After dialog closes, refresh list in case a new student was added
         CargarDatosAlGrid()
     End Sub
 

@@ -11,8 +11,19 @@ Public Class FormAgregarAlumno
  Private txtNombreNuevo As TextBox
  Private WithEvents btnGuardarNuevo As Button
 
+ ' Si el formulario se abre desde FormMenu de un profesor, podemos recibir la materia para asignarla
+ Private InitialMateria As String = Nothing
+
  Public Sub New()
  InitializeComponent()
+ End Sub
+
+ ' Nuevo constructor que acepta materia inicial
+ Public Sub New(Optional materia As String = Nothing)
+ InitializeComponent()
+ If Not String.IsNullOrWhiteSpace(materia) Then
+ Me.InitialMateria = materia
+ End If
  End Sub
 
  Protected Overrides Sub Dispose(disposing As Boolean)
@@ -125,7 +136,18 @@ Public Class FormAgregarAlumno
  nuevo("nombre") = nombre
  nuevo("apellido") = apellido
  nuevo("fechaNacimiento") = Date.Now.ToString("yyyy-MM-dd")
- nuevo("materias") = New JArray()
+
+ ' Materias: si InitialMateria está presente, agregarla
+ Dim materiasArr As New JArray()
+ If Not String.IsNullOrWhiteSpace(InitialMateria) Then
+ Dim mat As New JObject()
+ mat("idMateria") =1
+ mat("nombreMateria") = InitialMateria
+ mat("notas") = New JArray()
+ materiasArr.Add(mat)
+ End If
+ nuevo("materias") = materiasArr
+
  nuevo("asistencias") = New JArray()
 
  all.Add(nuevo)
