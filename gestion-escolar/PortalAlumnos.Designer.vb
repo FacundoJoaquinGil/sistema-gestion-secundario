@@ -30,10 +30,13 @@ Partial Class PortalAlumnos
         lblLegend = New Label()
         btnPrev = New Button()
         btnNext = New Button()
-        lblMonthYear = New Label()
+        LblPromedioAsistencias = New Label()
         ToolTip1 = New ToolTip(components)
         lblUsuario = New Label()
         BtnVolver = New Button()
+        BtnNotas = New Button()
+        LblAsistencias = New Label()
+        LblMesActual = New Label()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         flpCalendar.SuspendLayout()
         SuspendLayout()
@@ -41,7 +44,7 @@ Partial Class PortalAlumnos
         ' Label2
         ' 
         Label2.AutoSize = True
-        Label2.BackColor = Color.Transparent
+        Label2.BackColor = Color.Azure
         Label2.Font = New Font("Segoe UI", 20.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label2.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label2.Location = New Point(12, 30)
@@ -54,19 +57,21 @@ Partial Class PortalAlumnos
         ' 
         PictureBox1.BackColor = Color.Transparent
         PictureBox1.Image = My.Resources.Resources.usuario
-        PictureBox1.Location = New Point(249, 27)
+        PictureBox1.Location = New Point(257, 28)
         PictureBox1.Name = "PictureBox1"
-        PictureBox1.Size = New Size(52, 54)
+        PictureBox1.Size = New Size(44, 42)
         PictureBox1.SizeMode = PictureBoxSizeMode.Zoom
         PictureBox1.TabIndex = 5
         PictureBox1.TabStop = False
         ' 
         ' flpCalendar
         ' 
+        flpCalendar.BackColor = Color.Azure
+        flpCalendar.BorderStyle = BorderStyle.FixedSingle
         flpCalendar.Controls.Add(lblLegend)
-        flpCalendar.Location = New Point(12, 169)
+        flpCalendar.Location = New Point(12, 150)
         flpCalendar.Name = "flpCalendar"
-        flpCalendar.Size = New Size(760, 227)
+        flpCalendar.Size = New Size(480, 350)
         flpCalendar.TabIndex = 7
         ' 
         ' lblLegend
@@ -80,40 +85,46 @@ Partial Class PortalAlumnos
         ' 
         ' btnPrev
         ' 
-        btnPrev.Font = New Font("Segoe UI Black", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        btnPrev.Location = New Point(205, 402)
+        btnPrev.BackColor = Color.MediumOrchid
+        btnPrev.Font = New Font("Courier New", 18F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        btnPrev.ForeColor = Color.White
+        btnPrev.Location = New Point(12, 506)
         btnPrev.Name = "btnPrev"
         btnPrev.Size = New Size(45, 39)
         btnPrev.TabIndex = 8
         btnPrev.Text = "<"
-        btnPrev.UseVisualStyleBackColor = True
+        btnPrev.UseVisualStyleBackColor = False
         ' 
         ' btnNext
         ' 
-        btnNext.Font = New Font("Segoe UI Black", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        btnNext.Location = New Point(541, 402)
+        btnNext.BackColor = Color.MediumOrchid
+        btnNext.Font = New Font("Courier New", 18F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        btnNext.ForeColor = Color.White
+        btnNext.Location = New Point(447, 506)
         btnNext.Name = "btnNext"
         btnNext.Size = New Size(45, 39)
         btnNext.TabIndex = 9
         btnNext.Text = ">"
-        btnNext.UseVisualStyleBackColor = True
+        btnNext.UseVisualStyleBackColor = False
         ' 
-        ' lblMonthYear
+        ' LblPromedioAsistencias
         ' 
-        lblMonthYear.AutoSize = True
-        lblMonthYear.Font = New Font("Segoe UI Black", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        lblMonthYear.Location = New Point(619, 139)
-        lblMonthYear.Name = "lblMonthYear"
-        lblMonthYear.Size = New Size(0, 20)
-        lblMonthYear.TabIndex = 10
+        LblPromedioAsistencias.AutoSize = True
+        LblPromedioAsistencias.BackColor = Color.Azure
+        LblPromedioAsistencias.Font = New Font("Segoe UI Black", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        LblPromedioAsistencias.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        LblPromedioAsistencias.Location = New Point(498, 180)
+        LblPromedioAsistencias.Name = "LblPromedioAsistencias"
+        LblPromedioAsistencias.Size = New Size(0, 20)
+        LblPromedioAsistencias.TabIndex = 10
         ' 
         ' lblUsuario
         ' 
         lblUsuario.AutoSize = True
-        lblUsuario.BackColor = Color.Transparent
+        lblUsuario.BackColor = Color.Azure
         lblUsuario.Font = New Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         lblUsuario.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        lblUsuario.Location = New Point(12, 100)
+        lblUsuario.Location = New Point(12, 117)
         lblUsuario.Name = "lblUsuario"
         lblUsuario.Size = New Size(0, 30)
         lblUsuario.TabIndex = 11
@@ -130,15 +141,52 @@ Partial Class PortalAlumnos
         BtnVolver.Text = "VOLVER"
         BtnVolver.UseVisualStyleBackColor = False
         ' 
+        ' BtnNotas
+        ' 
+        BtnNotas.BackColor = Color.MediumOrchid
+        BtnNotas.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        BtnNotas.ForeColor = Color.White
+        BtnNotas.Location = New Point(637, 46)
+        BtnNotas.Name = "BtnNotas"
+        BtnNotas.Size = New Size(135, 35)
+        BtnNotas.TabIndex = 14
+        BtnNotas.Text = "Ver Mis Notas"
+        BtnNotas.UseVisualStyleBackColor = False
+        ' 
+        ' LblAsistencias
+        ' 
+        LblAsistencias.AutoSize = True
+        LblAsistencias.BackColor = Color.Transparent
+        LblAsistencias.Font = New Font("Segoe UI", 20.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        LblAsistencias.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        LblAsistencias.Location = New Point(12, 478)
+        LblAsistencias.Name = "LblAsistencias"
+        LblAsistencias.Size = New Size(0, 37)
+        LblAsistencias.TabIndex = 15
+        ' 
+        ' LblMesActual
+        ' 
+        LblMesActual.AutoSize = True
+        LblMesActual.BackColor = Color.Azure
+        LblMesActual.Font = New Font("Segoe UI Black", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        LblMesActual.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        LblMesActual.Location = New Point(498, 150)
+        LblMesActual.Name = "LblMesActual"
+        LblMesActual.Size = New Size(0, 20)
+        LblMesActual.TabIndex = 16
+        ' 
         ' PortalAlumnos
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackgroundImage = My.Resources.Resources.background
         ClientSize = New Size(784, 561)
+        Controls.Add(LblMesActual)
+        Controls.Add(LblAsistencias)
+        Controls.Add(BtnNotas)
         Controls.Add(BtnVolver)
         Controls.Add(lblUsuario)
-        Controls.Add(lblMonthYear)
+        Controls.Add(LblPromedioAsistencias)
         Controls.Add(btnNext)
         Controls.Add(btnPrev)
         Controls.Add(flpCalendar)
@@ -161,8 +209,11 @@ Partial Class PortalAlumnos
     Friend WithEvents btnPrev As Button
     Friend WithEvents lblLegend As Label
     Friend WithEvents btnNext As Button
-    Friend WithEvents lblMonthYear As Label
+    Friend WithEvents LblPromedioAsistencias As Label
     Friend WithEvents ToolTip1 As ToolTip
     Friend WithEvents lblUsuario As Label
     Friend WithEvents BtnVolver As Button
+    Friend WithEvents BtnNotas As Button
+    Friend WithEvents LblAsistencias As Label
+    Friend WithEvents LblMesActual As Label
 End Class

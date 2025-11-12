@@ -15,6 +15,7 @@ Public Class FormMenu
     End Sub
 
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormMenu))
         btnAgregarAlumno = New Button()
         btnRefrescar = New Button()
         dgvAlumnos = New DataGridView()
@@ -24,19 +25,27 @@ Public Class FormMenu
         ' 
         ' btnAgregarAlumno
         ' 
+        btnAgregarAlumno.BackColor = Color.MediumOrchid
+        btnAgregarAlumno.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        btnAgregarAlumno.ForeColor = Color.White
         btnAgregarAlumno.Location = New Point(10, 10)
         btnAgregarAlumno.Name = "btnAgregarAlumno"
         btnAgregarAlumno.Size = New Size(120, 30)
         btnAgregarAlumno.TabIndex = 0
         btnAgregarAlumno.Text = "Agregar Alumno"
+        btnAgregarAlumno.UseVisualStyleBackColor = False
         ' 
         ' btnRefrescar
         ' 
+        btnRefrescar.BackColor = Color.MediumOrchid
+        btnRefrescar.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        btnRefrescar.ForeColor = Color.White
         btnRefrescar.Location = New Point(140, 10)
         btnRefrescar.Name = "btnRefrescar"
         btnRefrescar.Size = New Size(120, 30)
         btnRefrescar.TabIndex = 1
         btnRefrescar.Text = "Refrescar Lista"
+        btnRefrescar.UseVisualStyleBackColor = False
         ' 
         ' dgvAlumnos
         ' 
@@ -44,11 +53,13 @@ Public Class FormMenu
         dgvAlumnos.AllowUserToDeleteRows = False
         dgvAlumnos.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         dgvAlumnos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        dgvAlumnos.BackgroundColor = Color.Azure
+        dgvAlumnos.BorderStyle = BorderStyle.None
         dgvAlumnos.Location = New Point(10, 50)
         dgvAlumnos.Name = "dgvAlumnos"
         dgvAlumnos.ReadOnly = True
         dgvAlumnos.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        dgvAlumnos.Size = New Size(880, 492)
+        dgvAlumnos.Size = New Size(762, 453)
         dgvAlumnos.TabIndex = 2
         ' 
         ' BtnVolver2
@@ -56,7 +67,7 @@ Public Class FormMenu
         BtnVolver2.BackColor = Color.MediumOrchid
         BtnVolver2.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         BtnVolver2.ForeColor = Color.White
-        BtnVolver2.Location = New Point(783, 556)
+        BtnVolver2.Location = New Point(664, 514)
         BtnVolver2.Name = "BtnVolver2"
         BtnVolver2.Size = New Size(108, 35)
         BtnVolver2.TabIndex = 14
@@ -65,11 +76,13 @@ Public Class FormMenu
         ' 
         ' FormMenu
         ' 
-        ClientSize = New Size(900, 600)
+        BackgroundImage = My.Resources.Resources.background
+        ClientSize = New Size(784, 561)
         Controls.Add(BtnVolver2)
         Controls.Add(btnAgregarAlumno)
         Controls.Add(btnRefrescar)
         Controls.Add(dgvAlumnos)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Name = "FormMenu"
         StartPosition = FormStartPosition.CenterScreen
         Text = "Panel de Gestión de Alumnos"

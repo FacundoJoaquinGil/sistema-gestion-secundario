@@ -33,7 +33,6 @@ Partial Class Login
         Label3 = New Label()
         TextBox1 = New TextBox()
         Label2 = New Label()
-        Label6 = New Label()
         CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
         SuspendLayout()
@@ -43,7 +42,7 @@ Partial Class Login
         PictureBox2.BackColor = Color.Transparent
         PictureBox2.BackgroundImageLayout = ImageLayout.None
         PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), Image)
-        PictureBox2.Location = New Point(348, 12)
+        PictureBox2.Location = New Point(344, 38)
         PictureBox2.Name = "PictureBox2"
         PictureBox2.Size = New Size(128, 106)
         PictureBox2.SizeMode = PictureBoxSizeMode.Zoom
@@ -56,7 +55,7 @@ Partial Class Login
         Label1.BackColor = Color.Transparent
         Label1.Font = New Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label1.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        Label1.Location = New Point(293, 121)
+        Label1.Location = New Point(279, 147)
         Label1.Name = "Label1"
         Label1.Size = New Size(248, 45)
         Label1.TabIndex = 2
@@ -64,7 +63,7 @@ Partial Class Login
         ' 
         ' Panel1
         ' 
-        Panel1.BackColor = Color.WhiteSmoke
+        Panel1.BackColor = Color.Azure
         Panel1.BorderStyle = BorderStyle.FixedSingle
         Panel1.Controls.Add(btnLogin)
         Panel1.Controls.Add(Label5)
@@ -117,8 +116,8 @@ Partial Class Login
         txtPassword.BackColor = Color.White
         txtPassword.BorderStyle = BorderStyle.FixedSingle
         txtPassword.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        txtPassword.ForeColor = Color.Gray
-        txtPassword.Location = New Point(159, 192)
+        txtPassword.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        txtPassword.Location = New Point(155, 190)
         txtPassword.Name = "txtPassword"
         txtPassword.PasswordChar = "*"c
         txtPassword.PlaceholderText = " ejemplo:1234"
@@ -141,8 +140,8 @@ Partial Class Login
         TextBox1.BackColor = Color.White
         TextBox1.BorderStyle = BorderStyle.FixedSingle
         TextBox1.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        TextBox1.ForeColor = Color.Gray
-        TextBox1.Location = New Point(159, 134)
+        TextBox1.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        TextBox1.Location = New Point(155, 133)
         TextBox1.Name = "TextBox1"
         TextBox1.PlaceholderText = " ejemplo: LauraMartinez19"
         TextBox1.Size = New Size(209, 25)
@@ -160,18 +159,6 @@ Partial Class Login
         Label2.TabIndex = 3
         Label2.Text = "Iniciar Sesion"
         ' 
-        ' Label6
-        ' 
-        Label6.AutoSize = True
-        Label6.BackColor = Color.Transparent
-        Label6.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        Label6.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        Label6.Location = New Point(337, 166)
-        Label6.Name = "Label6"
-        Label6.Size = New Size(143, 21)
-        Label6.TabIndex = 9
-        Label6.Text = "Ingrese a su cuenta"
-        ' 
         ' Login
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -179,7 +166,6 @@ Partial Class Login
         BackColor = Color.White
         BackgroundImage = My.Resources.Resources.background
         ClientSize = New Size(784, 561)
-        Controls.Add(Label6)
         Controls.Add(Panel1)
         Controls.Add(Label1)
         Controls.Add(PictureBox2)
@@ -204,6 +190,5 @@ Partial Class Login
     Friend WithEvents TextBox1 As TextBox
     Friend WithEvents Label5 As Label
     Friend WithEvents btnLogin As Button
-    Friend WithEvents Label6 As Label
 
 End Class

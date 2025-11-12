@@ -32,6 +32,30 @@
         {
           "fecha": "2025-10-03",
           "presente": true
+        },
+        {
+          "fecha": "2025-10-06",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-07",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-08",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-03",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-04",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-05",
+          "presente": false
         }
       ]
     },
@@ -63,6 +87,26 @@
         {
           "fecha": "2025-10-02",
           "presente": true
+        },
+        {
+          "fecha": "2025-10-09",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-10",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-03",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-04",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-05",
+          "presente": false
         }
       ]
     }
