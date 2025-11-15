@@ -107,8 +107,8 @@ Public Class Login
             MessageBox.Show($"Bienvenido profesor {profesor.nombre} {profesor.apellido} - Materia: {If(String.IsNullOrEmpty(profesor.materia), "(sin materia)", profesor.materia)}", "Ingreso correcto", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
             Dim portalProf As New FormMenu()
-
-            'portalProf.UsuarioActual = profesor.usuario //por si quiero mostrar el nombre del profe
+            ' Pasamos la materia del profesor para que FormMenu cargue sus alumnos
+            portalProf.MateriaActual = profesor.materia
 
             portalProf.Show()
             Me.Hide()

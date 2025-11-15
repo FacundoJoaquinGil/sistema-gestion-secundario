@@ -1,4 +1,4 @@
-﻿{
+{
   "alumnos": [
     {
       "id": 1,
@@ -12,12 +12,20 @@
         {
           "idMateria": 1,
           "nombreMateria": "Matemáticas",
-          "notas": [ 8.5, 7.0, 9.0 ]
+          "notas": [
+            8.0,
+            7.0,
+            9.0
+          ]
         },
         {
           "idMateria": 2,
           "nombreMateria": "Historia",
-          "notas": [ 7.5, 8.0, 6.5 ]
+          "notas": [
+            7.5,
+            8.0,
+            6.5
+          ]
         }
       ],
       "asistencias": [
@@ -95,12 +103,20 @@
         {
           "idMateria": 1,
           "nombreMateria": "Matemáticas",
-          "notas": [ 6.0, 6.5, 7.0 ]
+          "notas": [
+            6.0,
+            6.5,
+            7.0
+          ]
         },
         {
           "idMateria": 3,
           "nombreMateria": "Física",
-          "notas": [ 8.0, 7.5, 9.0 ]
+          "notas": [
+            8.0,
+            7.5,
+            9.0
+          ]
         }
       ],
       "asistencias": [
@@ -133,9 +149,81 @@
           "presente": false
         }
       ]
+    },
+    {
+      "id": 3,
+      "tipo": "alumno",
+      "usuario": "benjaminnieto4",
+      "password": "1234",
+      "nombre": "Benjamin",
+      "apellido": "nieto",
+      "fechaNacimiento": "2025-11-06",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": [
+            7.0,
+            6.0,
+            9.0
+          ]
+        }
+      ],
+      "asistencias": [
+        {
+          "fecha": "2025-11-06",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "tipo": "alumno",
+      "usuario": "nicoperez4",
+      "password": "1234",
+      "nombre": "Nico",
+      "apellido": "Perez",
+      "fechaNacimiento": "2025-11-06",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": [
+            9.0,
+            9.0,
+            9.0
+          ]
+        }
+      ],
+      "asistencias": []
+    },
+    {
+      "id": 5,
+      "tipo": "alumno",
+      "usuario": "joaquingil5",
+      "password": "1234",
+      "nombre": "Joaquin",
+      "apellido": "Gil",
+      "fechaNacimiento": "2025-11-15",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": [
+            6.0,
+            7.0,
+            8.0
+          ]
+        }
+      ],
+      "asistencias": [
+        {
+          "fecha": "2025-11-15",
+          "presente": true
+        }
+      ]
     }
   ],
-
   "profesores": [
     {
       "nombre": "Marcelo",

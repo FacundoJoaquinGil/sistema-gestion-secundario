@@ -1,6 +1,7 @@
 Imports System
 Imports System.Windows.Forms
 Imports System.ComponentModel
+Imports Newtonsoft.Json.Linq
 
 Public Class FormAgregarAlumno
  Inherits Form
@@ -10,8 +11,19 @@ Public Class FormAgregarAlumno
  Private txtNombreNuevo As TextBox
  Private WithEvents btnGuardarNuevo As Button
 
+ ' Si el formulario se abre desde FormMenu de un profesor, podemos recibir la materia para asignarla
+ Private InitialMateria As String = Nothing
+
  Public Sub New()
  InitializeComponent()
+ End Sub
+
+ ' Nuevo constructor que acepta materia inicial
+ Public Sub New(Optional materia As String = Nothing)
+ InitializeComponent()
+ If Not String.IsNullOrWhiteSpace(materia) Then
+ Me.InitialMateria = materia
+ End If
  End Sub
 
  Protected Overrides Sub Dispose(disposing As Boolean)
@@ -80,22 +92,74 @@ Public Class FormAgregarAlumno
  End If
 
  Dim nuevoNombre As String = txtNombreNuevo.Text.Trim()
- ' Validación: evitar nombres duplicados (case-insensitive)
- If DatosGlobales.ListaAlumnos.Exists(Function(a) a.NombreCompleto.Trim().ToLower() = nuevoNombre.ToLower()) Then
+
+ ' Dividir en nombre y apellido
+ Dim partes() As String = nuevoNombre.Split(New Char() {" "c}, StringSplitOptions.RemoveEmptyEntries)
+ Dim nombre As String = partes(0)
+ Dim apellido As String = If(partes.Length >1, String.Join(" ", partes,1, partes.Length -1), String.Empty)
+
+ Try
+ ' Cargar lista de alumnos desde JSON
+ Dim all As JArray = DataStore.GetAlumnosJArray()
+ ' Verificar duplicados por nombre+apellido
+ For Each a As JObject In all
+ If String.Equals(a("nombre")?.ToString()?.Trim(), nombre, StringComparison.OrdinalIgnoreCase) AndAlso _
+ String.Equals(a("apellido")?.ToString()?.Trim(), apellido, StringComparison.OrdinalIgnoreCase) Then
  MessageBox.Show("Ya existe un alumno con ese nombre.")
  Return
  End If
+ Next
 
- '1. Creamos el nuevo alumno
- Dim nuevoAlumno As New Alumno(nuevoNombre)
+ ' Calcular nuevo id
+ Dim maxId As Integer =0
+ For Each a As JObject In all
+ Dim idToken = a("id")
+ If idToken IsNot Nothing Then
+ Dim idVal As Integer
+ If Integer.TryParse(idToken.ToString(), idVal) Then
+ If idVal > maxId Then maxId = idVal
+ End If
+ End If
+ Next
+ Dim nuevoId As Integer = maxId +1
 
- '2. Lo agregamos a la lista GLOBAL
- DatosGlobales.ListaAlumnos.Add(nuevoAlumno)
+ ' Generar usuario simple
+ Dim usuarioBase As String = (nombre & apellido).ToLower().Replace(" ", "")
+ Dim usuario As String = usuarioBase & nuevoId.ToString()
 
- '3. Guardamos en disco
- DatosGlobales.SaveToFile()
+ ' Crear JObject nuevo alumno
+ Dim nuevo As New JObject()
+ nuevo("id") = nuevoId
+ nuevo("tipo") = "alumno"
+ nuevo("usuario") = usuario
+ nuevo("password") = "1234"
+ nuevo("nombre") = nombre
+ nuevo("apellido") = apellido
+ nuevo("fechaNacimiento") = Date.Now.ToString("yyyy-MM-dd")
 
- MessageBox.Show("Alumno agregado con éxito.")
- Me.Close() ' Cerramos esta ventana
+ ' Materias: si InitialMateria está presente, agregarla
+ Dim materiasArr As New JArray()
+ If Not String.IsNullOrWhiteSpace(InitialMateria) Then
+ Dim mat As New JObject()
+ mat("idMateria") =1
+ mat("nombreMateria") = InitialMateria
+ mat("notas") = New JArray()
+ materiasArr.Add(mat)
+ End If
+ nuevo("materias") = materiasArr
+
+ nuevo("asistencias") = New JArray()
+
+ all.Add(nuevo)
+ ' Guardar de vuelta
+ Dim root As JObject = DataStore.LoadRootJObject()
+ root("alumnos") = all
+ DataStore.SaveRootJObject(root)
+
+ MessageBox.Show("Alumno agregado con éxito. Usuario: " & usuario)
+ Me.Close()
+ Catch ex As Exception
+ MessageBox.Show("Error al agregar alumno: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+ End Try
  End Sub
 End Class
