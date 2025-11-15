@@ -1,10 +1,9 @@
-' Archivo: FormMenu.vb
 Imports System.Windows.Forms
 
 Public Class FormMenu
     Inherits Form
 
-    ' Controles del formulario
+
     Private WithEvents btnAgregarAlumno As Button
     Private WithEvents btnRefrescar As Button
     Friend WithEvents BtnVolver2 As Button
@@ -26,6 +25,8 @@ Public Class FormMenu
         ' btnAgregarAlumno
         ' 
         btnAgregarAlumno.BackColor = Color.MediumOrchid
+        btnAgregarAlumno.Cursor = Cursors.Hand
+        btnAgregarAlumno.FlatStyle = FlatStyle.Flat
         btnAgregarAlumno.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         btnAgregarAlumno.ForeColor = Color.White
         btnAgregarAlumno.Location = New Point(10, 10)
@@ -38,6 +39,8 @@ Public Class FormMenu
         ' btnRefrescar
         ' 
         btnRefrescar.BackColor = Color.MediumOrchid
+        btnRefrescar.Cursor = Cursors.Hand
+        btnRefrescar.FlatStyle = FlatStyle.Flat
         btnRefrescar.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         btnRefrescar.ForeColor = Color.White
         btnRefrescar.Location = New Point(140, 10)
@@ -54,7 +57,7 @@ Public Class FormMenu
         dgvAlumnos.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         dgvAlumnos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
         dgvAlumnos.BackgroundColor = Color.Azure
-        dgvAlumnos.BorderStyle = BorderStyle.None
+        dgvAlumnos.GridColor = Color.White
         dgvAlumnos.Location = New Point(10, 50)
         dgvAlumnos.Name = "dgvAlumnos"
         dgvAlumnos.ReadOnly = True
@@ -65,6 +68,8 @@ Public Class FormMenu
         ' BtnVolver2
         ' 
         BtnVolver2.BackColor = Color.MediumOrchid
+        BtnVolver2.Cursor = Cursors.Hand
+        BtnVolver2.FlatStyle = FlatStyle.Flat
         BtnVolver2.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         BtnVolver2.ForeColor = Color.White
         BtnVolver2.Location = New Point(664, 514)
@@ -82,6 +87,7 @@ Public Class FormMenu
         Controls.Add(btnAgregarAlumno)
         Controls.Add(btnRefrescar)
         Controls.Add(dgvAlumnos)
+        ForeColor = SystemColors.ActiveCaption
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Name = "FormMenu"
         StartPosition = FormStartPosition.CenterScreen

@@ -37,6 +37,7 @@ Partial Class PortalAlumnos
         BtnNotas = New Button()
         LblAsistencias = New Label()
         LblMesActual = New Label()
+        LblDiaHoy = New Label()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         flpCalendar.SuspendLayout()
         SuspendLayout()
@@ -86,6 +87,8 @@ Partial Class PortalAlumnos
         ' btnPrev
         ' 
         btnPrev.BackColor = Color.MediumOrchid
+        btnPrev.Cursor = Cursors.Hand
+        btnPrev.FlatStyle = FlatStyle.Flat
         btnPrev.Font = New Font("Courier New", 18F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         btnPrev.ForeColor = Color.White
         btnPrev.Location = New Point(12, 506)
@@ -98,6 +101,8 @@ Partial Class PortalAlumnos
         ' btnNext
         ' 
         btnNext.BackColor = Color.MediumOrchid
+        btnNext.Cursor = Cursors.Hand
+        btnNext.FlatStyle = FlatStyle.Flat
         btnNext.Font = New Font("Courier New", 18F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         btnNext.ForeColor = Color.White
         btnNext.Location = New Point(447, 506)
@@ -113,10 +118,11 @@ Partial Class PortalAlumnos
         LblPromedioAsistencias.BackColor = Color.Azure
         LblPromedioAsistencias.Font = New Font("Segoe UI Black", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         LblPromedioAsistencias.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        LblPromedioAsistencias.Location = New Point(498, 180)
+        LblPromedioAsistencias.Location = New Point(498, 179)
         LblPromedioAsistencias.Name = "LblPromedioAsistencias"
-        LblPromedioAsistencias.Size = New Size(0, 20)
+        LblPromedioAsistencias.Size = New Size(83, 20)
         LblPromedioAsistencias.TabIndex = 10
+        LblPromedioAsistencias.Text = "Promedio"
         ' 
         ' lblUsuario
         ' 
@@ -132,6 +138,8 @@ Partial Class PortalAlumnos
         ' BtnVolver
         ' 
         BtnVolver.BackColor = Color.MediumOrchid
+        BtnVolver.Cursor = Cursors.Hand
+        BtnVolver.FlatStyle = FlatStyle.Flat
         BtnVolver.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         BtnVolver.ForeColor = Color.White
         BtnVolver.Location = New Point(665, 516)
@@ -144,6 +152,8 @@ Partial Class PortalAlumnos
         ' BtnNotas
         ' 
         BtnNotas.BackColor = Color.MediumOrchid
+        BtnNotas.Cursor = Cursors.Hand
+        BtnNotas.FlatStyle = FlatStyle.Flat
         BtnNotas.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         BtnNotas.ForeColor = Color.White
         BtnNotas.Location = New Point(637, 46)
@@ -172,8 +182,21 @@ Partial Class PortalAlumnos
         LblMesActual.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         LblMesActual.Location = New Point(498, 150)
         LblMesActual.Name = "LblMesActual"
-        LblMesActual.Size = New Size(0, 20)
+        LblMesActual.Size = New Size(39, 20)
         LblMesActual.TabIndex = 16
+        LblMesActual.Text = "Mes"
+        ' 
+        ' LblDiaHoy
+        ' 
+        LblDiaHoy.AutoSize = True
+        LblDiaHoy.BackColor = Color.Azure
+        LblDiaHoy.Font = New Font("Segoe UI Black", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        LblDiaHoy.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        LblDiaHoy.Location = New Point(498, 210)
+        LblDiaHoy.Name = "LblDiaHoy"
+        LblDiaHoy.Size = New Size(90, 20)
+        LblDiaHoy.TabIndex = 17
+        LblDiaHoy.Text = "Dia de Hoy"
         ' 
         ' PortalAlumnos
         ' 
@@ -181,6 +204,7 @@ Partial Class PortalAlumnos
         AutoScaleMode = AutoScaleMode.Font
         BackgroundImage = My.Resources.Resources.background
         ClientSize = New Size(784, 561)
+        Controls.Add(LblDiaHoy)
         Controls.Add(LblMesActual)
         Controls.Add(LblAsistencias)
         Controls.Add(BtnNotas)
@@ -216,4 +240,5 @@ Partial Class PortalAlumnos
     Friend WithEvents BtnNotas As Button
     Friend WithEvents LblAsistencias As Label
     Friend WithEvents LblMesActual As Label
+    Friend WithEvents LblDiaHoy As Label
 End Class

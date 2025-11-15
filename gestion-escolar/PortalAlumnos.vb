@@ -36,6 +36,12 @@ Public Class PortalAlumnos
             Return
         End Try
 
+        Dim hoy As Date = Date.Today
+        Dim diaActual As String = hoy.ToString("dddd", New Globalization.CultureInfo("es-ES"))
+
+
+        LblDiaHoy.Text = $"El dia de hoy es {diaActual}"
+
         ' Verificar que se pasó el usuario desde Login
         If String.IsNullOrWhiteSpace(UsuarioActual) Then
             MessageBox.Show("No se recibió usuario desde el Login.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -56,6 +56,30 @@
         {
           "fecha": "2025-11-05",
           "presente": false
+        },
+        {
+          "fecha": "2025-11-06",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-07",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-10",
+          "presente": false
+        },
+        {
+          "fecha": "2025-11-11",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-12",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-13",
+          "presente": true
         }
       ]
     },

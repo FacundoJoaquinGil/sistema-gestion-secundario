@@ -55,7 +55,7 @@ Partial Class Login
         Label1.BackColor = Color.Transparent
         Label1.Font = New Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label1.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        Label1.Location = New Point(279, 147)
+        Label1.Location = New Point(285, 147)
         Label1.Name = "Label1"
         Label1.Size = New Size(248, 45)
         Label1.TabIndex = 2
@@ -80,9 +80,11 @@ Partial Class Login
         ' btnLogin
         ' 
         btnLogin.BackColor = Color.MediumOrchid
+        btnLogin.Cursor = Cursors.Hand
+        btnLogin.FlatStyle = FlatStyle.Flat
         btnLogin.Font = New Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         btnLogin.ForeColor = Color.White
-        btnLogin.Location = New Point(197, 260)
+        btnLogin.Location = New Point(203, 260)
         btnLogin.Name = "btnLogin"
         btnLogin.Size = New Size(175, 35)
         btnLogin.TabIndex = 4
