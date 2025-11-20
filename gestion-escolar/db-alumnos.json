@@ -222,6 +222,23 @@
           "presente": true
         }
       ]
+    },
+    {
+      "id": 6,
+      "tipo": "alumno",
+      "usuario": "martadiaz6",
+      "password": "1234",
+      "nombre": "Marta",
+      "apellido": "Diaz",
+      "fechaNacimiento": "2025-11-15",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": []
+        }
+      ],
+      "asistencias": []
     }
   ],
   "profesores": [

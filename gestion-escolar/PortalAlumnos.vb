@@ -330,10 +330,16 @@ Public Class PortalAlumnos
     End Sub
 
     Private Sub BtnNotas_Click(sender As Object, e As EventArgs) Handles BtnNotas.Click
-        'Dim frmNotas As New NotasAlumnos(currentAlumno)
-        'frmNotas.ShowDialog()
+
+        Dim frmNotas As New NotasAlumno()
+        frmNotas.UsuarioActual = UsuarioActual
+        frmNotas.Show()
         Me.Hide()
 
+    End Sub
+
+    Private Sub PortalAlumnos_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        Application.Exit()
     End Sub
 
 End Class

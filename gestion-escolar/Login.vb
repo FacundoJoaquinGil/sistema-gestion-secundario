@@ -119,4 +119,12 @@ Public Class Login
         MessageBox.Show("Usuario o contraseña incorrectos", "", MessageBoxButtons.OK, MessageBoxIcon.Warning)
     End Sub
 
+    Private Sub Login_(sender As Object, e As FormClosingEventArgs)
+
+    End Sub
+
+    Private Sub Login_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        Application.Exit()
+    End Sub
+
 End Class
