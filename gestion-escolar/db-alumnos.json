@@ -105,6 +105,10 @@
         {
           "fecha": "2025-11-06",
           "presente": true
+        },
+        {
+          "fecha": "2025-11-24",
+          "presente": false
         }
       ]
     },
@@ -127,7 +131,38 @@
           ]
         }
       ],
-      "asistencias": []
+      "asistencias": [
+        {
+          "fecha": "2025-11-24",
+          "presente": true
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "tipo": "alumno",
+      "usuario": "joaquingil5",
+      "password": "1234",
+      "nombre": "joaquin",
+      "apellido": "gil",
+      "fechaNacimiento": "2025-11-24",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": [
+            6.0,
+            6.0,
+            7.0
+          ]
+        }
+      ],
+      "asistencias": [
+        {
+          "fecha": "2025-11-24",
+          "presente": false
+        }
+      ]
     }
   ],
   "profesores": [
