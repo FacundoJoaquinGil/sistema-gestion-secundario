@@ -4,9 +4,6 @@
     <_LastSelectedProfileId>C:\Users\byfre\source\repos\gestion-escolar\gestion-escolar\My Project\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="NotasAlumno.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="Login.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -20,6 +17,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FormMenu.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="NotasAlumno.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="PortalAlumnos.vb">

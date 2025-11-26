@@ -94,7 +94,7 @@
     {
       "id": 2,
       "tipo": "alumno",
-      "usuario": "juanpe1",
+      "usuario": "juan1",
       "password": "1234",
       "nombre": "Juan",
       "apellido": "Pérez",
@@ -104,9 +104,9 @@
           "idMateria": 1,
           "nombreMateria": "Matemáticas",
           "notas": [
-            6.0,
-            6.5,
-            7.0
+            4.0,
+            3.5,
+            5.0
           ]
         },
         {
@@ -126,6 +126,23 @@
         },
         {
           "fecha": "2025-10-02",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-03",
+          "presente": true
+        },
+
+        {
+          "fecha": "2025-10-06",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-07",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-08",
           "presente": true
         },
         {
@@ -136,9 +153,72 @@
           "fecha": "2025-10-10",
           "presente": true
         },
+
+        {
+          "fecha": "2025-10-13",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-14",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-15",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-16",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-17",
+          "presente": false
+        },
+
+        {
+          "fecha": "2025-10-20",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-21",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-22",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-23",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-24",
+          "presente": true
+        },
+
+        {
+          "fecha": "2025-10-27",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-28",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-29",
+          "presente": false
+        },
+        {
+          "fecha": "2025-10-30",
+          "presente": true
+        },
+        {
+          "fecha": "2025-10-31",
+          "presente": true
+        },
         {
           "fecha": "2025-11-03",
-          "presente": true
+          "presente": false
         },
         {
           "fecha": "2025-11-04",
@@ -147,6 +227,73 @@
         {
           "fecha": "2025-11-05",
           "presente": false
+        },
+        {
+          "fecha": "2025-11-06",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-07",
+          "presente": false
+        },
+
+        {
+          "fecha": "2025-11-10",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-11",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-12",
+          "presente": false
+        },
+        {
+          "fecha": "2025-11-13",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-14",
+          "presente": false
+        },
+
+        {
+          "fecha": "2025-11-17",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-18",
+          "presente": false
+        },
+        {
+          "fecha": "2025-11-19",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-20",
+          "presente": false
+        },
+        {
+          "fecha": "2025-11-21",
+          "presente": true
+        },
+
+        {
+          "fecha": "2025-11-24",
+          "presente": false
+        },
+        {
+          "fecha": "2025-11-25",
+          "presente": true
+        },
+        {
+          "fecha": "2025-11-26",
+          "presente": false
+        },
+        {
+          "fecha": "2025-11-27",
+          "presente": true
         }
       ]
     },
@@ -200,7 +347,7 @@
     {
       "id": 5,
       "tipo": "alumno",
-      "usuario": "joaquingil5",
+      "usuario": "joa1",
       "password": "1234",
       "nombre": "Joaquin",
       "apellido": "Gil",

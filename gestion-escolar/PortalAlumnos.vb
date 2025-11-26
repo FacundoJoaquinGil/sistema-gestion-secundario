@@ -119,14 +119,8 @@ Public Class PortalAlumnos
         End If
 
         ' Asignar al label LblMesActual si existe
-        If Me.Controls.ContainsKey("LblMesActual") Then
-            CType(Me.Controls("LblMesActual"), Label).Text = monthText
-        Else
-            ' Si no existe, opcional: fallback a LblPromedioAsistencias para evitar que la info se pierda
-            If Me.Controls.ContainsKey("LblPromedioAsistencias") Then
-                CType(Me.Controls("LblPromedioAsistencias"), Label).Text = monthText
-            End If
-        End If
+        LblMesActual.Text = $"Mes: {monthText}"
+
     End Sub
 
     Private Sub DibujaCalendario()
@@ -238,11 +232,22 @@ Public Class PortalAlumnos
 
         ' ---- al final de DibujaCalendario() ----
         ' ---- Mostrar promedio mensual de asistencias ----
+        ' En el Load del formulario
         If Me.Controls.ContainsKey("LblPromedioAsistencias") Then
             Dim promedio As Double = CalcularPromedioMensualAsistencias()
             Dim lblProm As Label = CType(Me.Controls("LblPromedioAsistencias"), Label)
+
             lblProm.Text = $"Promedio de asistencias: {promedio.ToString("F2")}%"
+
+            ' Si el promedio es menor al 70% mostrar texto en rojo, si no usar el color por defecto
+            If promedio < 60 Then
+                lblProm.ForeColor = Color.LightCoral
+            Else
+                ' Usá el color que quieras como "normal" (aquí uso el gris que venís usando)
+                lblProm.ForeColor = Color.LightGreen
+            End If
         End If
+
     End Sub
 
 

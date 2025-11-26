@@ -42,6 +42,20 @@ Public Class NotasAlumno
 
     ' Evento Load del form
     Private Sub NotasAlumno_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Quitar color de selección en celdas
+        dgvNotas.DefaultCellStyle.SelectionBackColor = dgvNotas.DefaultCellStyle.BackColor
+        dgvNotas.DefaultCellStyle.SelectionForeColor = dgvNotas.DefaultCellStyle.ForeColor
+
+        ' Quitar color de selección en los headers
+        dgvNotas.ColumnHeadersDefaultCellStyle.SelectionBackColor = dgvNotas.ColumnHeadersDefaultCellStyle.BackColor
+        dgvNotas.ColumnHeadersDefaultCellStyle.SelectionForeColor = dgvNotas.ColumnHeadersDefaultCellStyle.ForeColor
+
+        ' Evitar uso de estilos visuales que fuerzan azul
+        dgvNotas.EnableHeadersVisualStyles = False
+
+        ' Opcional: evitar selección total de fila
+        dgvNotas.SelectionMode = DataGridViewSelectionMode.CellSelect
+
         ' Verificar que UsuarioActual esté seteado
         If String.IsNullOrWhiteSpace(UsuarioActual) Then
             MessageBox.Show("No se recibió el usuario. Asegúrate de asignar la propiedad UsuarioActual antes de mostrar el formulario.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -75,9 +89,10 @@ Public Class NotasAlumno
         End If
 
         ' Mostrar nombre del alumno en el form (Label)
-        lblNombreAlumno.Text = $"{alumnoActual.nombre} {alumnoActual.apellido}"
+        lblNombreAlumno.Text = $"Notas de {alumnoActual.nombre} {alumnoActual.apellido}"
 
-        ' Cargar materias en ComboBox
+        cbMaterias.DropDownStyle = ComboBoxStyle.DropDownList   ' 🔒 evita la edición
+
         If alumnoActual.materias IsNot Nothing AndAlso alumnoActual.materias.Count > 0 Then
             cbMaterias.DataSource = alumnoActual.materias
             cbMaterias.DisplayMember = "nombreMateria"
@@ -90,7 +105,6 @@ Public Class NotasAlumno
         End If
     End Sub
 
-    ' Cuando cambie la materia seleccionada
     Private Sub cbMaterias_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbMaterias.SelectedIndexChanged
         If cbMaterias.SelectedItem Is Nothing OrElse alumnoActual Is Nothing Then
             Return
@@ -98,35 +112,82 @@ Public Class NotasAlumno
 
         Dim materiaSeleccionada As Materia = CType(cbMaterias.SelectedItem, Materia)
 
-        ' Limpiar DataGridView
         dgvNotas.Rows.Clear()
 
         If materiaSeleccionada.notas Is Nothing OrElse materiaSeleccionada.notas.Count = 0 Then
             lblPromedio.Text = "Sin notas"
+            lblPromedio.ForeColor = Color.Black
             Return
         End If
 
-        ' Rellenar DataGridView con las notas (Nro, Nota)
-        Dim i As Integer = 1
-        For Each n As Double In materiaSeleccionada.notas
-            dgvNotas.Rows.Add(i, n.ToString("F2"))
-            i += 1
-        Next
+        ' Preparar los 3 valores (si faltan, quedan vacíos)
+        Dim valor1 As String = String.Empty
+        Dim valor2 As String = String.Empty
+        Dim valor3 As String = String.Empty
 
-        ' Calcular promedio (seguro y con control)
-        Dim promedio As Double = 0
+        If materiaSeleccionada.notas.Count > 0 Then
+            valor1 = materiaSeleccionada.notas(0).ToString("F2")
+        End If
+        If materiaSeleccionada.notas.Count > 1 Then
+            valor2 = materiaSeleccionada.notas(1).ToString("F2")
+        End If
+        If materiaSeleccionada.notas.Count > 2 Then
+            valor3 = materiaSeleccionada.notas(2).ToString("F2")
+        End If
+
+        ' Agregar una sola fila con los 3 trimestres
+        dgvNotas.Rows.Add(valor1, valor2, valor3)
+
+        ' Calcular promedio (siempre que haya al menos 1 nota)
+        If materiaSeleccionada.notas Is Nothing OrElse Not materiaSeleccionada.notas.Any() Then
+            lblPromedio.ForeColor = Color.Black
+            lblPromedio.Text = "No hay notas para calcular el promedio."
+            Return
+        End If
+
+        Dim promedio As Double = materiaSeleccionada.notas.Average()
+
+        If promedio >= 6 Then
+            lblPromedio.ForeColor = Color.LightGreen
+            lblPromedio.Text = $"Promedio: {promedio.ToString("F2")} Aprobado"
+        Else
+            lblPromedio.ForeColor = Color.LightCoral
+            lblPromedio.Text = $"Promedio: {promedio.ToString("F2")} Desaprobado"
+        End If
+
+
         Try
-            promedio = materiaSeleccionada.notas.Average()
-            lblPromedio.Text = "Promedio: " & Math.Round(promedio, 2).ToString("F2")
+            For colIndex As Integer = 0 To 2
+                Dim cellValue = dgvNotas.Rows(0).Cells(colIndex).Value?.ToString()
+                'Dim notaDbl As Double
+                'If Not String.IsNullOrEmpty(cellValue) AndAlso Double.TryParse(cellValue, notaDbl) Then
+                '    If notaDbl >= 6 Then
+                '        dgvNotas.Rows(0).Cells(colIndex).Style.ForeColor = Color.Green
+                '    Else
+                '        dgvNotas.Rows(0).Cells(colIndex).Style.ForeColor = Color.Red
+                '    End If
+                'Else
+                '    ' Vacío: color por defecto
+                '    dgvNotas.Rows(0).Cells(colIndex).Style.ForeColor = Color.Black
+                'End If
+                dgvNotas.Rows(0).Cells(colIndex).Style.ForeColor = Color.Black
+            Next
         Catch ex As Exception
-            lblPromedio.Text = "Error calculando promedio"
+            ' Si algo falla con estilo, no interrumpe la app
         End Try
 
     End Sub
 
+
     ' Botón Cerrar
     Private Sub btnCerrar_Click(sender As Object, e As EventArgs) Handles btnCerrar.Click
-        Me.Close()
+        Dim volverPortal As New PortalAlumnos()
+        volverPortal.UsuarioActual = UsuarioActual
+        volverPortal.Show()
+        Me.Hide()
     End Sub
 
+    Private Sub NotasAlumno_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        Application.Exit()
+    End Sub
 End Class
