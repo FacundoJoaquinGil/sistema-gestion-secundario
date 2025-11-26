@@ -73,6 +73,8 @@ Public Class FormMenu
         dgvAlumnos.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         dgvAlumnos.Size = New Size(762, 453)
         dgvAlumnos.TabIndex = 2
+        ' Texto de las celdas en azul oscuro
+        dgvAlumnos.DefaultCellStyle.ForeColor = Color.DarkBlue
         ' 
         ' BtnVolver2
         ' 
@@ -117,7 +119,6 @@ Public Class FormMenu
     End Sub
 
     ' ----2. SUB-RUTINA PARA DEFINIR LAS COLUMNAS ----
-    ' --- AJUSTADA ---
     Private Sub ConfigurarGrid()
         dgvAlumnos.Columns.Clear()
 
@@ -127,34 +128,27 @@ Public Class FormMenu
         dgvAlumnos.Columns.Add("Promedio", "Promedio")
         dgvAlumnos.Columns("Nombre").Width = 200
 
-        ' === Columnas de Botones (Como en tu imagen) ===
-        ' --- NUEVO BOTÓN: Ver Detalle ---
+        ' === Columnas de Botones ===
         Dim colDetalle As New DataGridViewButtonColumn()
         colDetalle.Name = "btnDetalle"
+        colDetalle.HeaderText = "Detalle"
         colDetalle.Text = "Ver Detalle"
         colDetalle.UseColumnTextForButtonValue = True
         dgvAlumnos.Columns.Add(colDetalle)
 
-        ' Botón para Cargar Notas
         Dim colNotas As New DataGridViewButtonColumn()
         colNotas.Name = "btnNotas"
+        colNotas.HeaderText = "Notas"
         colNotas.Text = "Cargar Notas"
         colNotas.UseColumnTextForButtonValue = True
         dgvAlumnos.Columns.Add(colNotas)
 
-        ' Botón para Asistencia (Presente)
-        Dim colPresente As New DataGridViewButtonColumn()
-        colPresente.Name = "btnPresente"
-        colPresente.Text = "Marcar Presente (Hoy)"
-        colPresente.UseColumnTextForButtonValue = True
-        dgvAlumnos.Columns.Add(colPresente)
-
-        ' Botón para Asistencia (Ausente)
-        Dim colAusente As New DataGridViewButtonColumn()
-        colAusente.Name = "btnAusente"
-        colAusente.Text = "Marcar Ausente (Hoy)"
-        colAusente.UseColumnTextForButtonValue = True
-        dgvAlumnos.Columns.Add(colAusente)
+        ' Columna única para Asistencia con dos botones dibujados dentro de la celda
+        Dim colAsistencia As New DataGridViewTextBoxColumn()
+        colAsistencia.Name = "colAsistencia"
+        colAsistencia.HeaderText = "Asistencia"
+        colAsistencia.ReadOnly = True
+        dgvAlumnos.Columns.Add(colAsistencia)
     End Sub
 
     ' ----3. SUB-RUTINA PARA CARGAR/RECARGAR LOS ALUMNOS ----
@@ -215,7 +209,6 @@ Public Class FormMenu
     End Sub
 
     ' ----4. MANEJAR LOS CLICS EN LOS BOTONES DEL GRID ----
-    ' --- LÓGICA COMPLETAMENTE NUEVA ---
     Private Sub dgvAlumnos_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAlumnos.CellClick
         If e.RowIndex < 0 Then Return
 
@@ -256,12 +249,65 @@ Public Class FormMenu
                     MessageBox.Show("Error al abrir editor de notas: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
 
-            Case "btnPresente"
-                MarcarAsistenciaJson(alumnoJson, True)
-
-            Case "btnAusente"
-                MarcarAsistenciaJson(alumnoJson, False)
+            Case Else
+                ' Otros casos no manejados aquí
         End Select
+    End Sub
+
+    ' Dibujar dos botones dentro de la celda de asistencia
+    Private Sub dgvAlumnos_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles dgvAlumnos.CellPainting
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
+        If dgvAlumnos.Columns(e.ColumnIndex).Name <> "colAsistencia" Then Return
+
+        e.PaintBackground(e.CellBounds, True)
+
+        ' Definir rectángulos para los dos botones
+        Dim padding As Integer = 4
+        Dim totalWidth As Integer = e.CellBounds.Width - padding * 2
+        Dim btnWidth As Integer = (totalWidth - padding) \ 2
+        Dim btnHeight As Integer = e.CellBounds.Height - padding * 2
+        Dim leftRect As New Rectangle(e.CellBounds.X + padding, e.CellBounds.Y + padding, btnWidth, btnHeight)
+        Dim rightRect As New Rectangle(e.CellBounds.X + padding + btnWidth + padding, e.CellBounds.Y + padding, btnWidth, btnHeight)
+
+        ' Dibujar botones (apariencia simple)
+        System.Windows.Forms.ControlPaint.DrawButton(e.Graphics, leftRect, ButtonState.Normal)
+        System.Windows.Forms.ControlPaint.DrawButton(e.Graphics, rightRect, ButtonState.Normal)
+
+        ' Dibujar texto centrado
+        Dim sf As New StringFormat()
+        sf.Alignment = StringAlignment.Center
+        sf.LineAlignment = StringAlignment.Center
+        Using brush As New SolidBrush(Color.Black)
+            e.Graphics.DrawString("Presente", dgvAlumnos.Font, brush, leftRect, sf)
+            e.Graphics.DrawString("Ausente", dgvAlumnos.Font, brush, rightRect, sf)
+        End Using
+
+        e.Handled = True
+    End Sub
+
+    ' Capturar clicks dentro de la celda de asistencia y determinar si fue Presente o Ausente
+    Private Sub dgvAlumnos_CellMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles dgvAlumnos.CellMouseClick
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
+        If dgvAlumnos.Columns(e.ColumnIndex).Name <> "colAsistencia" Then Return
+
+        Dim index As Integer = e.RowIndex
+        If index < 0 OrElse index >= AlumnosJson.Count Then
+            MessageBox.Show("Índice inválido de alumno.")
+            Return
+        End If
+        Dim alumnoJson As JObject = AlumnosJson(index)
+
+        ' Calcular posición dentro de la celda
+        Dim cellRect As Rectangle = dgvAlumnos.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, False)
+        Dim relativeX As Integer = e.X
+
+        If relativeX < cellRect.Width / 2 Then
+            ' Presente
+            MarcarAsistenciaJson(alumnoJson, True)
+        Else
+            ' Ausente
+            MarcarAsistenciaJson(alumnoJson, False)
+        End If
     End Sub
 
     Private Sub MarcarAsistenciaJson(alumnoJson As JObject, presente As Boolean)
@@ -271,6 +317,13 @@ Public Class FormMenu
             Return
         End If
         Dim fecha As Date = Date.Now.Date
+
+        ' No permitir cargar asistencia en fines de semana
+        If fecha.DayOfWeek = DayOfWeek.Saturday OrElse fecha.DayOfWeek = DayOfWeek.Sunday Then
+            MessageBox.Show("No se puede cargar asistencia los sábados ni domingos.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return
+        End If
+
         Try
             DataStore.UpdateAsistencia(usuario, fecha, presente)
             MessageBox.Show("Asistencia guardada.")
@@ -292,6 +345,7 @@ Public Class FormMenu
         ' After dialog closes, refresh list in case a new student was added
         CargarDatosAlGrid()
     End Sub
+
 
     Private Sub BtnVolver2_Click(sender As Object, e As EventArgs) Handles BtnVolver2.Click
         Dim volverLogin As New Login()
