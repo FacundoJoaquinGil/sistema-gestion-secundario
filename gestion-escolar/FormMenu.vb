@@ -16,7 +16,7 @@ Public Class FormMenu
     ' Nueva propiedad: materia del profesor (si se abre por profesor)
     Public Property MateriaActual As String = String.Empty
 
-    ' Lista interna de alumnos cargados desde db-alumnos.json (JObjects)
+    ' Lista interna de alumnos cargados desde db-alumnos.json (JObject
     Private AlumnosJson As New List(Of JObject)()
 
     Public Sub New()
@@ -86,6 +86,9 @@ Public Class FormMenu
         Text = "Panel de Gestión de Alumnos"
         CType(dgvAlumnos, System.ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
+        ' Escalado y tamaño mínimo para que la UI sea adaptable en distintas pantallas
+        Me.AutoScaleMode = AutoScaleMode.Dpi
+        Me.MinimumSize = New Size(800, 500)
     End Sub
 
     ' ----1. CUANDO EL FORMULARIO SE CARGA ----
@@ -103,13 +106,14 @@ Public Class FormMenu
     Private Sub ConfigurarGrid()
         dgvAlumnos.Columns.Clear()
 
+        ' Orden requerido: Nombre, Asistencia %, Detalle (botón), Asistencia (celda con2 botones), Promedio, Cargar Notas (botón)
+
         ' Columnas de Datos
         dgvAlumnos.Columns.Add("Nombre", "Nombre del Alumno")
         dgvAlumnos.Columns.Add("Asistencia", "Asistencia (%)")
-        dgvAlumnos.Columns.Add("Promedio", "Promedio")
         dgvAlumnos.Columns("Nombre").Width = 200
 
-        ' === Columnas de Botones ===
+        ' Columna botón: Detalle
         Dim colDetalle As New DataGridViewButtonColumn()
         colDetalle.Name = "btnDetalle"
         colDetalle.HeaderText = "Detalle"
@@ -117,19 +121,50 @@ Public Class FormMenu
         colDetalle.UseColumnTextForButtonValue = True
         dgvAlumnos.Columns.Add(colDetalle)
 
-        Dim colNotas As New DataGridViewButtonColumn()
-        colNotas.Name = "btnNotas"
-        colNotas.HeaderText = "Notas"
-        colNotas.Text = "Cargar Notas"
-        colNotas.UseColumnTextForButtonValue = True
-        dgvAlumnos.Columns.Add(colNotas)
-
         ' Columna única para Asistencia con dos botones dibujados dentro de la celda
         Dim colAsistencia As New DataGridViewTextBoxColumn()
         colAsistencia.Name = "colAsistencia"
         colAsistencia.HeaderText = "Asistencia"
         colAsistencia.ReadOnly = True
         dgvAlumnos.Columns.Add(colAsistencia)
+
+        ' Columna Promedio
+        dgvAlumnos.Columns.Add("Promedio", "Promedio")
+
+        ' Columna botón: Cargar Notas
+        Dim colNotas As New DataGridViewButtonColumn()
+        colNotas.Name = "btnNotas"
+        colNotas.HeaderText = "Cargar Notas"
+        colNotas.Text = "Cargar Notas"
+        colNotas.UseColumnTextForButtonValue = True
+        dgvAlumnos.Columns.Add(colNotas)
+
+        ' Ajustes de tamaño: dar más espacio a Nombre y un poco más a la columna Asistencia
+        Try
+            dgvAlumnos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+
+            If dgvAlumnos.Columns.Contains("Nombre") Then
+                dgvAlumnos.Columns("Nombre").FillWeight = 300
+                dgvAlumnos.Columns("Nombre").MinimumWidth = 180
+            End If
+
+            For Each col As DataGridViewColumn In dgvAlumnos.Columns
+                If col.Name <> "Nombre" Then
+                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+                    If col.Name = "colAsistencia" Then
+                        col.FillWeight = 180 ' más espacio para que los botones entren
+                        col.MinimumWidth = 180
+                    ElseIf col.Name = "btnNotas" Then
+                        col.FillWeight = 120 ' aumentar un poco Cargar Notas
+                        col.MinimumWidth = 110
+                    Else
+                        col.FillWeight = 100
+                    End If
+                End If
+            Next
+        Catch
+            ' Ignorar errores defensivamente
+        End Try
     End Sub
 
     ' ----3. SUB-RUTINA PARA CARGAR/RECARGAR LOS ALUMNOS ----
@@ -171,7 +206,7 @@ Public Class FormMenu
                     End If
                 End If
 
-                ' Asistencia
+                ' Asistencia (%)
                 Dim porcentaje As Double = 100.0
                 Dim asistArr As JArray = TryCast(ja("asistencias"), JArray)
                 If asistArr IsNot Nothing AndAlso asistArr.Count > 0 Then
@@ -182,7 +217,8 @@ Public Class FormMenu
                     porcentaje = (totalPresentes * 100.0) / asistArr.Count
                 End If
 
-                dgvAlumnos.Rows.Add(nombreFull, porcentaje.ToString("N2") & " %", promedio.ToString("N2"))
+                ' Agregar fila respetando el orden: Nombre, Asistencia %, Detalle, Asistencia (celda), Promedio, Cargar Notas
+                dgvAlumnos.Rows.Add(nombreFull, porcentaje.ToString("N2") & " %", Nothing, String.Empty, promedio.ToString("N2"), Nothing)
             Next
         Catch ex As Exception
             MessageBox.Show("Error leyendo db-alumnos.json: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -332,5 +368,9 @@ Public Class FormMenu
         Dim volverLogin As New Login()
         volverLogin.Show()
         Me.Hide()
+    End Sub
+
+    Private Sub FormMenu_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        Application.Exit()
     End Sub
 End Class

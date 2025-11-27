@@ -40,6 +40,10 @@
         {
           "fecha": "2025-10-03",
           "presente": true
+        },
+        {
+          "fecha": "2025-11-24",
+          "presente": true
         }
       ]
     },
@@ -160,9 +164,43 @@
       "asistencias": [
         {
           "fecha": "2025-11-24",
-          "presente": false
+          "presente": true
         }
       ]
+    },
+    {
+      "id": 6,
+      "tipo": "alumno",
+      "usuario": "marcelolopez6",
+      "password": "1234",
+      "nombre": "marcelo",
+      "apellido": "lopez",
+      "fechaNacimiento": "2025-11-27",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": []
+        }
+      ],
+      "asistencias": []
+    },
+    {
+      "id": 7,
+      "tipo": "alumno",
+      "usuario": "tuterpalacios7",
+      "password": "1234",
+      "nombre": "tuter",
+      "apellido": "palacios",
+      "fechaNacimiento": "2025-11-27",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": []
+        }
+      ],
+      "asistencias": []
     }
   ],
   "profesores": [

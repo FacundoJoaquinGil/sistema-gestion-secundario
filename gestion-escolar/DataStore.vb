@@ -85,13 +85,13 @@ Module DataStore
         Return JObject.Parse(json)
     End Function
 
-    Public Sub SaveRootJObject(root As JObject)
+    Public Function SaveRootJObject(root As JObject) As String
         Dim text = root.ToString(Formatting.Indented)
         Dim path As String = GetPreferredDbPath()
 
-        ' Guardar en el archivo preferido (proyecto si existe)
-        Dim savedProjectPath As String = Nothing
-        Dim savedRuntimePath As String = Nothing
+        Dim savedPath As String = String.Empty
+
+        ' Intentar guardar en el archivo preferido (proyecto si existe)
         Try
             ' Ensure directory exists
             Dim dir = System.IO.Path.GetDirectoryName(path)
@@ -99,33 +99,24 @@ Module DataStore
                 Directory.CreateDirectory(dir)
             End If
             File.WriteAllText(path, text)
-            savedProjectPath = path
+            savedPath = path
         Catch
             ' Ignorar fallo al escribir en el archivo preferido
         End Try
 
-        ' Asegurar que la copia runtime también se actualice
-        Try
-            File.WriteAllText(RuntimeDbPath, text)
-            savedRuntimePath = RuntimeDbPath
-        Catch
-            ' Ignorar fallo al escribir la copia runtime
-        End Try
-
-        ' Mostrar confirmación con las rutas escritas
-        Dim msg As String = "Se guardó db-alumnos.json."
-        If Not String.IsNullOrWhiteSpace(savedProjectPath) Then
-            msg &= vbCrLf & "Archivo del proyecto actualizado en: " & savedProjectPath
-        End If
-        If Not String.IsNullOrWhiteSpace(savedRuntimePath) Then
-            msg &= vbCrLf & "Copia runtime actualizada en: " & savedRuntimePath
-        End If
-        If String.IsNullOrWhiteSpace(savedProjectPath) AndAlso String.IsNullOrWhiteSpace(savedRuntimePath) Then
-            msg &= vbCrLf & "No se pudo guardar el archivo."
+        ' Si no se pudo guardar en la ruta preferida, intentar la copia runtime
+        If String.IsNullOrWhiteSpace(savedPath) Then
+            Try
+                File.WriteAllText(RuntimeDbPath, text)
+                savedPath = RuntimeDbPath
+            Catch
+                ' Ignorar fallo
+            End Try
         End If
 
-        MessageBox.Show(msg, "Confirmación de guardado", MessageBoxButtons.OK, MessageBoxIcon.Information)
-    End Sub
+        ' Devolver la ruta donde se escribió (o cadena vacía si no se pudo)
+        Return If(String.IsNullOrWhiteSpace(savedPath), String.Empty, savedPath)
+    End Function
 
     Public Function GetAlumnosJArray() As JArray
         Dim root = LoadRootJObject()
