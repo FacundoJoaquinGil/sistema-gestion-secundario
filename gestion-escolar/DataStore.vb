@@ -85,13 +85,14 @@ Module DataStore
         Return JObject.Parse(json)
     End Function
 
-    Public Sub SaveRootJObject(root As JObject)
+    ' Modified: return saved path (string) or empty if failed
+    Public Function SaveRootJObject(root As JObject) As String
         Dim text = root.ToString(Formatting.Indented)
         Dim path As String = GetPreferredDbPath()
 
         ' Guardar en el archivo preferido (proyecto si existe)
-        Dim savedProjectPath As String = Nothing
-        Dim savedRuntimePath As String = Nothing
+        Dim savedProjectPath As String = String.Empty
+        Dim savedRuntimePath As String = String.Empty
         Try
             ' Ensure directory exists
             Dim dir = System.IO.Path.GetDirectoryName(path)
@@ -112,20 +113,17 @@ Module DataStore
             ' Ignorar fallo al escribir la copia runtime
         End Try
 
-        ' Mostrar confirmación con las rutas escritas
-        Dim msg As String = "Se guardó db-alumnos.json."
+        ' Return the most relevant saved path
         If Not String.IsNullOrWhiteSpace(savedProjectPath) Then
-            msg &= vbCrLf & "Archivo del proyecto actualizado en: " & savedProjectPath
+            Return savedProjectPath
         End If
         If Not String.IsNullOrWhiteSpace(savedRuntimePath) Then
-            msg &= vbCrLf & "Copia runtime actualizada en: " & savedRuntimePath
-        End If
-        If String.IsNullOrWhiteSpace(savedProjectPath) AndAlso String.IsNullOrWhiteSpace(savedRuntimePath) Then
-            msg &= vbCrLf & "No se pudo guardar el archivo."
+            Return savedRuntimePath
         End If
 
-        MessageBox.Show(msg, "Confirmación de guardado", MessageBoxButtons.OK, MessageBoxIcon.Information)
-    End Sub
+        ' If neither saved, return empty string
+        Return String.Empty
+    End Function
 
     Public Function GetAlumnosJArray() As JArray
         Dim root = LoadRootJObject()
@@ -208,6 +206,7 @@ Module DataStore
             asistArr.Add(nuevo)
         End If
 
+        ' Save, ignore returned path
         SaveRootJObject(root)
     End Sub
 
@@ -261,6 +260,7 @@ Module DataStore
         Next
         materiaObj("notas") = notasArr
 
+        ' Save, ignore returned path
         SaveRootJObject(root)
     End Sub
 End Module

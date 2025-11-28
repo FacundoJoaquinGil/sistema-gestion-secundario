@@ -154,9 +154,13 @@ Public Class FormAgregarAlumno
  ' Guardar de vuelta
  Dim root As JObject = DataStore.LoadRootJObject()
  root("alumnos") = all
- DataStore.SaveRootJObject(root)
+ Dim savedPath As String = DataStore.SaveRootJObject(root)
 
- MessageBox.Show("Alumno agregado con éxito. Usuario: " & usuario)
+ If String.IsNullOrWhiteSpace(savedPath) Then
+ MessageBox.Show("Alumno creado con éxito. No se pudo determinar la ruta de guardado.")
+ Else
+ MessageBox.Show("Alumno creado con éxito." & vbCrLf & savedPath)
+ End If
  Me.Close()
  Catch ex As Exception
  MessageBox.Show("Error al agregar alumno: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)

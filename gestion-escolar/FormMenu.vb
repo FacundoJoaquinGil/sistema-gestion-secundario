@@ -73,7 +73,7 @@ Public Class FormMenu
         dgvAlumnos.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         dgvAlumnos.Size = New Size(762, 453)
         dgvAlumnos.TabIndex = 2
-        ' Texto de las celdas en azul oscuro
+        ' Texto de celdas en azul oscuro
         dgvAlumnos.DefaultCellStyle.ForeColor = Color.DarkBlue
         ' 
         ' BtnVolver2
@@ -122,33 +122,55 @@ Public Class FormMenu
     Private Sub ConfigurarGrid()
         dgvAlumnos.Columns.Clear()
 
-        ' Columnas de Datos
-        dgvAlumnos.Columns.Add("Nombre", "Nombre del Alumno")
-        dgvAlumnos.Columns.Add("Asistencia", "Asistencia (%)")
-        dgvAlumnos.Columns.Add("Promedio", "Promedio")
-        dgvAlumnos.Columns("Nombre").Width = 200
+        '1) Nombre
+        Dim colNombre As New DataGridViewTextBoxColumn()
+        colNombre.Name = "Nombre"
+        colNombre.HeaderText = "Nombre del Alumno"
+        colNombre.FillWeight = 300
+        colNombre.MinimumWidth = 180
+        dgvAlumnos.Columns.Add(colNombre)
 
-        ' === Columnas de Botones ===
+        '2) Asistencia (%)
+        Dim colAsistPct As New DataGridViewTextBoxColumn()
+        colAsistPct.Name = "Asistencia"
+        colAsistPct.HeaderText = "Asistencia (%)"
+        colAsistPct.FillWeight = 100
+        dgvAlumnos.Columns.Add(colAsistPct)
+
+        '3) Detalle (button)
         Dim colDetalle As New DataGridViewButtonColumn()
         colDetalle.Name = "btnDetalle"
-        colDetalle.HeaderText = "Detalle"
-        colDetalle.Text = "Ver Detalle"
+        colDetalle.HeaderText = "Detalles"
+        colDetalle.Text = "Ver"
         colDetalle.UseColumnTextForButtonValue = True
+        colDetalle.FillWeight = 40
+        colDetalle.MinimumWidth = 70
         dgvAlumnos.Columns.Add(colDetalle)
 
+        '4) Asistencia (celda con2 botones pintados)
+        Dim colAsistencia As New DataGridViewTextBoxColumn()
+        colAsistencia.Name = "colAsistencia"
+        colAsistencia.HeaderText = "Asistencia"
+        colAsistencia.FillWeight = 180
+        colAsistencia.MinimumWidth = 180
+        dgvAlumnos.Columns.Add(colAsistencia)
+
+        '5) Promedio
+        Dim colPromedio As New DataGridViewTextBoxColumn()
+        colPromedio.Name = "Promedio"
+        colPromedio.HeaderText = "Promedio"
+        colPromedio.FillWeight = 100
+        dgvAlumnos.Columns.Add(colPromedio)
+
+        '6) Cargar Notas (button)
         Dim colNotas As New DataGridViewButtonColumn()
         colNotas.Name = "btnNotas"
         colNotas.HeaderText = "Notas"
         colNotas.Text = "Cargar Notas"
         colNotas.UseColumnTextForButtonValue = True
+        colNotas.FillWeight = 120
+        colNotas.MinimumWidth = 110
         dgvAlumnos.Columns.Add(colNotas)
-
-        ' Columna única para Asistencia con dos botones dibujados dentro de la celda
-        Dim colAsistencia As New DataGridViewTextBoxColumn()
-        colAsistencia.Name = "colAsistencia"
-        colAsistencia.HeaderText = "Asistencia"
-        colAsistencia.ReadOnly = True
-        dgvAlumnos.Columns.Add(colAsistencia)
     End Sub
 
     ' ----3. SUB-RUTINA PARA CARGAR/RECARGAR LOS ALUMNOS ----
@@ -201,7 +223,9 @@ Public Class FormMenu
                     porcentaje = (totalPresentes * 100.0) / asistArr.Count
                 End If
 
-                dgvAlumnos.Rows.Add(nombreFull, porcentaje.ToString("N2") & " %", promedio.ToString("N2"))
+                ' Añadir fila en el nuevo orden:
+                ' Nombre | Asistencia (%) | Detalle(button) | Asistencia(celda pintada) | Promedio | Cargar Notas(button)
+                dgvAlumnos.Rows.Add(nombreFull, porcentaje.ToString("N2") & " %", Nothing, "", promedio.ToString("N2"), Nothing)
             Next
         Catch ex As Exception
             MessageBox.Show("Error leyendo db-alumnos.json: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -212,7 +236,6 @@ Public Class FormMenu
     Private Sub dgvAlumnos_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAlumnos.CellClick
         If e.RowIndex < 0 Then Return
 
-        Dim nombreAlumno As String = dgvAlumnos.Rows(e.RowIndex).Cells("Nombre").Value.ToString()
         Dim index As Integer = e.RowIndex
         If index < 0 OrElse index >= AlumnosJson.Count Then
             MessageBox.Show("Índice inválido de alumno.")
@@ -220,12 +243,11 @@ Public Class FormMenu
         End If
 
         Dim alumnoJson As JObject = AlumnosJson(index)
-
         Dim nombreColumna As String = dgvAlumnos.Columns(e.ColumnIndex).Name
 
         Select Case nombreColumna
             Case "btnDetalle"
-                ' Mostrar detalle: convertimos a objeto Alumno temporal
+                ' Mostrar detalle
                 Dim alumnoObj As New Alumno($"{alumnoJson("nombre")?.ToString()} {alumnoJson("apellido")?.ToString()}")
                 Dim asistArr As JArray = TryCast(alumnoJson("asistencias"), JArray)
                 If asistArr IsNot Nothing Then
@@ -240,7 +262,6 @@ Public Class FormMenu
                 formDetalle.ShowDialog()
 
             Case "btnNotas"
-                ' Abrir FormCarga para editar notas en JSON
                 Try
                     Dim formCarga As New FormCarga(alumnoJson, If(String.IsNullOrWhiteSpace(MateriaActual), Nothing, MateriaActual))
                     formCarga.ShowDialog()
@@ -248,66 +269,7 @@ Public Class FormMenu
                 Catch ex As Exception
                     MessageBox.Show("Error al abrir editor de notas: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
-
-            Case Else
-                ' Otros casos no manejados aquí
         End Select
-    End Sub
-
-    ' Dibujar dos botones dentro de la celda de asistencia
-    Private Sub dgvAlumnos_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles dgvAlumnos.CellPainting
-        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
-        If dgvAlumnos.Columns(e.ColumnIndex).Name <> "colAsistencia" Then Return
-
-        e.PaintBackground(e.CellBounds, True)
-
-        ' Definir rectángulos para los dos botones
-        Dim padding As Integer = 4
-        Dim totalWidth As Integer = e.CellBounds.Width - padding * 2
-        Dim btnWidth As Integer = (totalWidth - padding) \ 2
-        Dim btnHeight As Integer = e.CellBounds.Height - padding * 2
-        Dim leftRect As New Rectangle(e.CellBounds.X + padding, e.CellBounds.Y + padding, btnWidth, btnHeight)
-        Dim rightRect As New Rectangle(e.CellBounds.X + padding + btnWidth + padding, e.CellBounds.Y + padding, btnWidth, btnHeight)
-
-        ' Dibujar botones (apariencia simple)
-        System.Windows.Forms.ControlPaint.DrawButton(e.Graphics, leftRect, ButtonState.Normal)
-        System.Windows.Forms.ControlPaint.DrawButton(e.Graphics, rightRect, ButtonState.Normal)
-
-        ' Dibujar texto centrado
-        Dim sf As New StringFormat()
-        sf.Alignment = StringAlignment.Center
-        sf.LineAlignment = StringAlignment.Center
-        Using brush As New SolidBrush(Color.Black)
-            e.Graphics.DrawString("Presente", dgvAlumnos.Font, brush, leftRect, sf)
-            e.Graphics.DrawString("Ausente", dgvAlumnos.Font, brush, rightRect, sf)
-        End Using
-
-        e.Handled = True
-    End Sub
-
-    ' Capturar clicks dentro de la celda de asistencia y determinar si fue Presente o Ausente
-    Private Sub dgvAlumnos_CellMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles dgvAlumnos.CellMouseClick
-        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
-        If dgvAlumnos.Columns(e.ColumnIndex).Name <> "colAsistencia" Then Return
-
-        Dim index As Integer = e.RowIndex
-        If index < 0 OrElse index >= AlumnosJson.Count Then
-            MessageBox.Show("Índice inválido de alumno.")
-            Return
-        End If
-        Dim alumnoJson As JObject = AlumnosJson(index)
-
-        ' Calcular posición dentro de la celda
-        Dim cellRect As Rectangle = dgvAlumnos.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, False)
-        Dim relativeX As Integer = e.X
-
-        If relativeX < cellRect.Width / 2 Then
-            ' Presente
-            MarcarAsistenciaJson(alumnoJson, True)
-        Else
-            ' Ausente
-            MarcarAsistenciaJson(alumnoJson, False)
-        End If
     End Sub
 
     Private Sub MarcarAsistenciaJson(alumnoJson As JObject, presente As Boolean)
@@ -318,9 +280,9 @@ Public Class FormMenu
         End If
         Dim fecha As Date = Date.Now.Date
 
-        ' No permitir cargar asistencia en fines de semana
+        ' Validación: no permitir cargar asistencia en fines de semana
         If fecha.DayOfWeek = DayOfWeek.Saturday OrElse fecha.DayOfWeek = DayOfWeek.Sunday Then
-            MessageBox.Show("No se puede cargar asistencia los sábados ni domingos.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("No se puede registrar la asistencia durante el fin de semana.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
 
@@ -342,10 +304,8 @@ Public Class FormMenu
     Private Sub btnAgregarAlumno_Click(sender As Object, e As EventArgs) Handles btnAgregarAlumno.Click
         Dim formAgregar As New FormAgregarAlumno(If(String.IsNullOrWhiteSpace(MateriaActual), Nothing, MateriaActual))
         formAgregar.ShowDialog()
-        ' After dialog closes, refresh list in case a new student was added
         CargarDatosAlGrid()
     End Sub
-
 
     Private Sub BtnVolver2_Click(sender As Object, e As EventArgs) Handles BtnVolver2.Click
         Dim volverLogin As New Login()
@@ -359,6 +319,75 @@ Public Class FormMenu
 
     Private Sub FormMenu_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Application.Exit()
+    End Sub
+
+    Private Sub dgvAlumnos_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles dgvAlumnos.CellPainting
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
+
+        If dgvAlumnos.Columns(e.ColumnIndex).Name = "colAsistencia" Then
+            e.PaintBackground(e.CellBounds, True)
+
+            Dim paddingLeft As Integer = 6
+            Dim paddingTop As Integer = 4
+            Dim spacing As Integer = 4
+
+            Dim cellWidth As Integer = e.CellBounds.Width
+            Dim cellHeight As Integer = e.CellBounds.Height
+
+            Dim buttonWidth As Integer = CInt((cellWidth - paddingLeft * 2 - spacing) / 2)
+            Dim buttonHeight As Integer = Math.Max(20, cellHeight - paddingTop * 2)
+
+            Dim leftRect As New Rectangle(e.CellBounds.X + paddingLeft, e.CellBounds.Y + paddingTop, buttonWidth, buttonHeight)
+            Dim rightRect As New Rectangle(leftRect.Right + spacing, leftRect.Y, buttonWidth, buttonHeight)
+
+            ControlPaint.DrawButton(e.Graphics, leftRect, ButtonState.Normal)
+            ControlPaint.DrawButton(e.Graphics, rightRect, ButtonState.Normal)
+
+            Using sf As New StringFormat()
+                sf.Alignment = StringAlignment.Center
+                sf.LineAlignment = StringAlignment.Center
+                Using foreBrush As New SolidBrush(Color.DarkBlue)
+                    e.Graphics.DrawString("Presente", e.CellStyle.Font, foreBrush, leftRect, sf)
+                    e.Graphics.DrawString("Ausente", e.CellStyle.Font, foreBrush, rightRect, sf)
+                End Using
+            End Using
+
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub dgvAlumnos_CellMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles dgvAlumnos.CellMouseClick
+        If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
+
+        If dgvAlumnos.Columns(e.ColumnIndex).Name = "colAsistencia" Then
+            Dim paddingLeft As Integer = 6
+            Dim paddingTop As Integer = 4
+            Dim spacing As Integer = 4
+
+            Dim cellRect As Rectangle = dgvAlumnos.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, False)
+            Dim cellWidth As Integer = cellRect.Width
+            Dim cellHeight As Integer = cellRect.Height
+
+            Dim buttonWidth As Integer = CInt((cellWidth - paddingLeft * 2 - spacing) / 2)
+            Dim buttonHeight As Integer = Math.Max(20, cellHeight - paddingTop * 2)
+
+            Dim leftRectRel As New Rectangle(paddingLeft, paddingTop, buttonWidth, buttonHeight)
+            Dim rightRectRel As New Rectangle(leftRectRel.Right + spacing, leftRectRel.Y, buttonWidth, buttonHeight)
+
+            Dim clickPoint As New Point(e.X, e.Y)
+
+            If leftRectRel.Contains(clickPoint) OrElse rightRectRel.Contains(clickPoint) Then
+                Dim idx As Integer = e.RowIndex
+                If idx < 0 OrElse idx >= AlumnosJson.Count Then Return
+                Dim alumnoJson As JObject = AlumnosJson(idx)
+
+                If leftRectRel.Contains(clickPoint) Then
+                    MarcarAsistenciaJson(alumnoJson, True)
+                ElseIf rightRectRel.Contains(clickPoint) Then
+                    MarcarAsistenciaJson(alumnoJson, False)
+                End If
+            End If
+        End If
     End Sub
 
 End Class
