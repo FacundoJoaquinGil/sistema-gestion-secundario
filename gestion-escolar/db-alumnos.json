@@ -88,6 +88,10 @@
         {
           "fecha": "2025-11-13",
           "presente": true
+        },
+        {
+          "fecha": "2025-12-05",
+          "presente": true
         }
       ]
     },
@@ -132,7 +136,6 @@
           "fecha": "2025-10-03",
           "presente": true
         },
-
         {
           "fecha": "2025-10-06",
           "presente": false
@@ -153,7 +156,6 @@
           "fecha": "2025-10-10",
           "presente": true
         },
-
         {
           "fecha": "2025-10-13",
           "presente": true
@@ -174,7 +176,6 @@
           "fecha": "2025-10-17",
           "presente": false
         },
-
         {
           "fecha": "2025-10-20",
           "presente": true
@@ -195,7 +196,6 @@
           "fecha": "2025-10-24",
           "presente": true
         },
-
         {
           "fecha": "2025-10-27",
           "presente": false
@@ -236,7 +236,6 @@
           "fecha": "2025-11-07",
           "presente": false
         },
-
         {
           "fecha": "2025-11-10",
           "presente": true
@@ -257,7 +256,6 @@
           "fecha": "2025-11-14",
           "presente": false
         },
-
         {
           "fecha": "2025-11-17",
           "presente": true
@@ -278,7 +276,6 @@
           "fecha": "2025-11-21",
           "presente": true
         },
-
         {
           "fecha": "2025-11-24",
           "presente": false
@@ -386,6 +383,32 @@
         }
       ],
       "asistencias": []
+    },
+    {
+      "id": 7,
+      "tipo": "alumno",
+      "usuario": "joselezcano7",
+      "password": "1234",
+      "nombre": "Jose",
+      "apellido": "Lezcano",
+      "fechaNacimiento": "2025-12-05",
+      "materias": [
+        {
+          "idMateria": 1,
+          "nombreMateria": "Matemáticas",
+          "notas": [
+            6.0,
+            5.0,
+            7.0
+          ]
+        }
+      ],
+      "asistencias": [
+        {
+          "fecha": "2025-12-05",
+          "presente": true
+        }
+      ]
     }
   ],
   "profesores": [

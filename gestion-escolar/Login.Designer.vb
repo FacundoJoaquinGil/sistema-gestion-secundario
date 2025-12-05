@@ -108,6 +108,7 @@ Partial Class Login
         Label4.Font = New Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label4.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label4.Location = New Point(27, 185)
+        Label4.Margin = New Padding(5)
         Label4.Name = "Label4"
         Label4.Size = New Size(126, 30)
         Label4.TabIndex = 7
@@ -119,7 +120,8 @@ Partial Class Login
         txtPassword.BorderStyle = BorderStyle.FixedSingle
         txtPassword.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         txtPassword.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        txtPassword.Location = New Point(155, 190)
+        txtPassword.Location = New Point(163, 190)
+        txtPassword.Margin = New Padding(5)
         txtPassword.Name = "txtPassword"
         txtPassword.PasswordChar = "*"c
         txtPassword.PlaceholderText = " ejemplo:1234"
@@ -132,6 +134,7 @@ Partial Class Login
         Label3.Font = New Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label3.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         Label3.Location = New Point(61, 127)
+        Label3.Margin = New Padding(5)
         Label3.Name = "Label3"
         Label3.Size = New Size(92, 30)
         Label3.TabIndex = 5
@@ -143,7 +146,8 @@ Partial Class Login
         TextBox1.BorderStyle = BorderStyle.FixedSingle
         TextBox1.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         TextBox1.ForeColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        TextBox1.Location = New Point(155, 133)
+        TextBox1.Location = New Point(163, 135)
+        TextBox1.Margin = New Padding(5)
         TextBox1.Name = "TextBox1"
         TextBox1.PlaceholderText = " ejemplo: LauraMartinez19"
         TextBox1.Size = New Size(209, 25)
